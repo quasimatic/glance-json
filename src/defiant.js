@@ -11,8 +11,6 @@ var xpath = require('xpath');
 	'use strict';
 
 	var Defiant = {
-		is_ie     : false,///(msie|trident)/i.test(navigator.userAgent),
-		is_safari : false, ///safari/i.test(navigator.userAgent),
 		env       : 'production',
 		xml_decl  : '<?xml version="1.0" encoding="utf-8"?>',
 		namespace : 'xmlns:d="defiant-namespace"',
@@ -58,10 +56,6 @@ var xpath = require('xpath');
 			span.appendChild(processor.transformToFragment(opt.data, document));
 			temp.removeAttribute('match');
 
-			if (this.is_safari) {
-				scripts = span.getElementsByTagName('script');
-				for (var i=0, il=scripts.length; i<il; i++) scripts[i].defer = true;
-			}
 			return span.innerHTML;
 		},
 		gatherTemplates: function() {
@@ -330,11 +324,12 @@ if (!JSON.toXML) {
 
 					return '<'+ name + (attr.length ? ' '+ attr.join(' ') : '') + (elem.length ? '>'+ elem.join('') +'</'+ name +'>' : '/>' );
 				},
-				scalar_to_xml: function(name, val, override) {
+				scalar_to_xml: function(name, val) {
 					var attr = '',
 						text,
 						constr,
-						cnName;
+						cnName,
+						override = false;
 
 					// check whether the nodename is valid
 					if (name.match(this.rx_validate_name) === null) {
@@ -554,14 +549,8 @@ Defiant.node.prettyPrint = function(node) {
 	var root = Defiant,
 		tabs = root.tabsize,
 		decl = root.xml_decl.toLowerCase(),
-		ser,
-		xstr;
-	if (root.is_ie) {
-		xstr = node.xml;
-	} else {
 		ser  = new XMLSerializer();
 		xstr = ser.serializeToString(node);
-	}
 	if (root.env !== 'development') {
 		// if environment is not development, remove defiant related info
 		xstr = xstr.replace(/ \w+\:d=".*?"| d\:\w+=".*?"/g, '');
@@ -677,7 +666,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 								else obj[cname] = null;
 								break;
 							case 'Array':
-								//console.log( Defiant.node.prettyPrint(item) );
+								// console.log( Defiant.node.prettyPrint(item) );
 								if (item.parentNode.firstChild === item && cConstr === 'Array' && cname !== 'd:item') {
 									if (cname === 'd:item' || cConstr === 'Array') {
 										cval = interpret(item);
@@ -722,16 +711,3 @@ Defiant.node.toJSON = function(xnode, stringify) {
 	return stringify ? JSON.stringify(ret, null, stringify) : ret;
 };
 
-
-// check if jQuery is present
-if (typeof(jQuery) !== 'undefined') {
-	(function ( $ ) {
-		'use strict';
-
-		$.fn.defiant = function(template, xpath) {
-			this.html( Defiant.render(template, xpath) );
-			return this;
-		};
-
-	}(jQuery));
-}
