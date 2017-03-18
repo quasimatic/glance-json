@@ -1,10 +1,13 @@
 require('./defiant');
 import extensions from './locators';
 
-let {options:{key}} = extensions;
+let {options:{key,value}} = extensions;
 
 function locate(query) {
-	return key(query);
+	let result = [];
+	result = result.concat(key(query));
+	result = result.concat(value(query));
+	return result;
 }
 
 function createGlanceJSON() {
