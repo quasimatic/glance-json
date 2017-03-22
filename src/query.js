@@ -17,11 +17,11 @@ function jsonSearch(tree, xpath, single) {
 		switch (xres[i].nodeType) {
 			case 2:
 			case 3:
-				ret.unshift(xres[i].nodeValue);
+				ret.unshift({json: xres[i].nodeValue, xml: xres[i]});
 				break;
 			default:
 				mapIndex = +xres[i].getAttribute('d:mi');
-				ret.unshift(map[mapIndex - 1]);
+				ret.unshift({json: map[mapIndex - 1], xml: xres[i]});
 		}
 	}
 
@@ -33,4 +33,4 @@ function jsonSearch(tree, xpath, single) {
 	return ret;
 }
 
-export {jsonSearch}
+export {jsonSearch};
