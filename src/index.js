@@ -1,6 +1,7 @@
 require('./defiant');
 import parser from 'glance-parser';
 import extensions from './locators';
+import shortestPath from './shortest-path';
 
 let {options} = extensions;
 
@@ -18,40 +19,7 @@ let processScopes = (json, scopes) => {
 	return scopes.reduce((scopeResult, targets) => {
 		let subjectResults = targetIntersections(json, targets);
 
-		let subjectParentDistance = {};
-		let closestDistance = -1;
-		let filteredResults = [];
-		subjectResults.forEach(d => {
-			let parent = d.xml;
-			let distance = 0;
-
-			while (parent) {
-				if (scopeResult.parentDistance[parent]) {
-					if (closestDistance === -1 || scopeResult.parentDistance[parent] + distance <= closestDistance) {
-						if (scopeResult.parentDistance[parent] + distance < closestDistance)
-							filteredResults.length = 0;
-
-						closestDistance = scopeResult.parentDistance[parent] + distance;
-						filteredResults.push(d);
-						return true;
-					}
-					else {
-						return false;
-					}
-				}
-
-				if (!subjectParentDistance[parent] || distance < subjectParentDistance[parent]) subjectParentDistance[parent] = distance;
-				parent = parent.parentNode;
-				++distance;
-			}
-
-			if (scopeResult.scopeResults.length === 0) {
-				filteredResults.push(d);
-				return true;
-			}
-
-			return false;
-		});
+		let {subjectParentDistance, filteredResults} = shortestPath(subjectResults, scopeResult.scopeResults, scopeResult.parentDistance);
 
 		return {scopeResults: filteredResults, parentDistance: subjectParentDistance};
 	}, {scopeResults: [], parentDistance: {}}).scopeResults;
