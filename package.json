@@ -43,6 +43,7 @@
     ]
   },
   "dependencies": {
+    "glance-parser": "0.0.1",
     "xmldom": "^0.1.27",
     "xpath": "0.0.24"
   }
