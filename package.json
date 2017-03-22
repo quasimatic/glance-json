@@ -4,6 +4,9 @@
   "description": "Use glance for referencing data in json",
   "main": "lib/index.js",
   "scripts": {
+    "build": "babel src -d lib",
+    "pretest": "npm run build",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
