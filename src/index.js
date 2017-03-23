@@ -50,7 +50,13 @@ let processScopes = (json, scopes) => {
 
 let targetIntersections = (json, targets) => {
 	return targets.reduce((result, target) => {
-		return result.concat(locate({...target, json}));
+		let located = locate({...target, json});
+		if(result.length === 0) return located;
+
+		let previousSubjects = {};
+		result.forEach(r => previousSubjects[r.xml] = true);
+
+		return located.filter(r => previousSubjects[r.xml]);
 	}, []);
 };
 
