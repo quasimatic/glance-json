@@ -9,8 +9,6 @@ function locate(query) {
 	let result = [];
 
 	if (query.options.length == 0) {
-		result = result.concat(options['key'](query));
-		result = result.concat(options['value'](query));
 		result = result.concat(options['key-contains'](query));
 		result = result.concat(options['value-contains'](query));
 	}
