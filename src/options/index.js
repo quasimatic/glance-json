@@ -18,7 +18,7 @@ export default {
 				return [];
 			}
 		},
-		'contains-key': function({label, json}) {
+		'key-contains': function({label, json}) {
 			try {
 				return jsonSearch(json, `//*[contains(local-name(), '${label}')]`);
 			}
@@ -26,7 +26,7 @@ export default {
 				return [];
 			}
 		},
-		'contains-value': function({label, json}) {
+		'value-contains': function({label, json}) {
 			try {
 				return jsonSearch(json, `//*[contains(text(), '${label}')]`);
 			}
