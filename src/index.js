@@ -38,10 +38,13 @@ let processScopes = (json, scopes) => {
 	return scopes.reduce((scopeResult, targets) => {
 		let subjectResults = targetIntersections(json, targets);
 
-		let {subjectParentDistance, filteredResults} = shortestPath(subjectResults, scopeResult.scopeResults, scopeResult.parentDistance);
+		if(scopeResult.scopeResults === null || scopeResult.scopeResults.length !== 0) {
+			let {subjectParentDistance, filteredResults} = shortestPath(subjectResults, scopeResult.scopeResults || [], scopeResult.parentDistance);
+			return {scopeResults: filteredResults, parentDistance: subjectParentDistance};
+		}
 
-		return {scopeResults: filteredResults, parentDistance: subjectParentDistance};
-	}, {scopeResults: [], parentDistance: {}}).scopeResults;
+		return {scopeResults: [], parentDistance: {}};
+	}, {scopeResults: null, parentDistance: {}}).scopeResults;
 };
 
 let targetIntersections = (json, targets) => {
