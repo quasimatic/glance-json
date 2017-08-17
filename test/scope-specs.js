@@ -85,4 +85,23 @@ describe('Scope', () => {
 			]
 		}, 'container2 > scope 1 > subject').should.equal('subject 1');
 	});
+
+	it('should not find matches if scope does not match', () => {
+		glanceJSON({
+			container: [
+				{
+					container2: {
+						scope: 'scope 1',
+						subject: 'subject 1'
+					},
+					scope: 'scope 1',
+					subject: 'subject 1.2'
+				},
+				{
+					scope: 'scope 2',
+					subject: 'subject 2'
+				}
+			]
+		}, 'missing > scope 1 > subject').should.deep.equal([]);
+	})
 });
