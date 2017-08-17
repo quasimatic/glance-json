@@ -2,13 +2,14 @@ require('./defiant');
 import parser from 'glance-parser';
 import extensions from './options';
 import shortestPath from './shortest-path';
+import {jsonSearch} from './query';
 
 let {options} = extensions;
 
-function locate(query) {
+function queries(query) {
 	let result = [];
 
-	if (query.options.length == 0) {
+	if (query.options.length === 0) {
 		result = result.concat(options['key-contains'](query));
 		result = result.concat(options['value-contains'](query));
 	}
@@ -30,12 +31,7 @@ function locate(query) {
 		}
 	}
 
-	return result.reduce((result, r) => {
-		let lookup = {};
-		result.forEach(r => lookup[r.xml] = true);
-		let exists = lookup[r.xml];
-		return exists ? result : result.concat(r);
-	}, []);
+	return `(${result.join(" or ")})`;
 }
 
 let processScopes = (json, scopes) => {
@@ -49,15 +45,8 @@ let processScopes = (json, scopes) => {
 };
 
 let targetIntersections = (json, targets) => {
-	return targets.reduce((result, target) => {
-		let located = locate({...target, json});
-		if(result.length === 0) return located;
-
-		let previousSubjects = {};
-		result.forEach(r => previousSubjects[r.xml] = true);
-
-		return located.filter(r => previousSubjects[r.xml]);
-	}, []);
+	let q = targets.map(target => queries({...target, json})).join(" and ");
+	return jsonSearch(json, `//*[${q} and not(*[${q}])]`);
 };
 
 function CreateGlanceJSON() {

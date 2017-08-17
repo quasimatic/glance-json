@@ -1,39 +1,16 @@
-import {jsonSearch} from '../query';
-
 export default {
 	options: {
-		'key': function({label, json}) {
-			try {
-				return jsonSearch(json, `//${label}`);
-			}
-			catch (e) {
-				return [];
-			}
+		'key': function({label}) {
+			return `local-name()='${label}'`;
 		},
-		'value': function({label, json}) {
-			try {
-				return jsonSearch(json, `//*[text()='${label}']`);
-			}
-			catch (e) {
-				return [];
-			}
+		'value': function({label}) {
+			return `.//text()='${label}'`;
 		},
-		'key-contains': function({label, json}) {
-			try {
-				return jsonSearch(json, `//*[contains(local-name(), '${label}')]`);
-			}
-			catch (e) {
-				return [];
-			}
+		'key-contains': function({label}) {
+			return `contains(local-name(), '${label}')`;
 		},
-		'value-contains': function({label, json}) {
-			try {
-				return jsonSearch(json, `//*[contains(text(), '${label}')]`);
-			}
-			catch (e) {
-				return [];
-			}
+		'value-contains': function({label}) {
+			return `.//text()[contains(., '${label}')]`;
 		}
-
 	}
 };
