@@ -1,16 +1,35 @@
+function getUniqueID(node) {
+	let path = '';
+	let p = node;
+
+	while (p) {
+		let i = 0;
+		let child = p;
+		while ((child = child.previousSibling) !== null) ++i;
+
+		path = `/${i}` + path;
+
+		p = p.parentNode;
+	}
+
+	return path;
+}
+
 export default function(subjectResults, scopeResults, parentDistance) {
 	let subjectParentDistance = {};
 	let closestDistance = -1;
 	let filteredResults = [];
 
 	subjectResults.forEach(d => {
-		subjectParentDistance[d.xml] = {};
+		let rootPath = getUniqueID(d.xml);
+		subjectParentDistance[rootPath] = {};
 		let parent = d.xml;
 		let distance = 0;
 
 		while (parent) {
-			if (parentDistance[parent] > -1) {
-				let totalDistance = parentDistance[parent] + distance;
+			let parentPath = getUniqueID(parent);
+			if (parentDistance[parentPath] > -1) {
+				let totalDistance = parentDistance[parentPath] + distance;
 
 				if (closestDistance === -1 || totalDistance <= closestDistance) {
 					if (totalDistance < closestDistance) {
@@ -22,7 +41,7 @@ export default function(subjectResults, scopeResults, parentDistance) {
 				}
 			}
 
-			subjectParentDistance[d.xml][parent] = distance;
+			subjectParentDistance[rootPath][parentPath] = distance;
 			parent = parent.parentNode;
 			++distance;
 		}
@@ -32,7 +51,7 @@ export default function(subjectResults, scopeResults, parentDistance) {
 		}
 	});
 
-	subjectParentDistance = filteredResults.reduce((r, f) => ({...r, ...subjectParentDistance[f.xml]}) , {});
+	subjectParentDistance = filteredResults.reduce((r, f) => ({...r, ...subjectParentDistance[getUniqueID(f.xml)]}), {});
 
 	return {subjectParentDistance, filteredResults};
 };

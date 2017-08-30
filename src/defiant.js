@@ -4,10 +4,12 @@
  * Copyright (c) 2013-2016, Hakan Bilgin <hbi@longscript.com>
  * Licensed under the MIT License
  */
-global.DOMParser = require('xmldom').DOMParser;
+let root = require('window-or-global');
+
+root.DOMParser = root.DOMParser || require('xmldom').DOMParser;
 var xpath = require('xpath');
 
-(function(global, module, undefined) {
+(function(root, module, undefined) {
 	'use strict';
 
 	var Defiant = {
@@ -104,11 +106,11 @@ var xpath = require('xpath');
 	};
 
 	// Export
-	global.Defiant = module.exports = Defiant;
+	root.Defiant = module.exports = Defiant;
 
 })(
-	// typeof global !== 'undefined' ? global : {},
-	typeof global !== 'undefined' ? global : {},
+	// typeof root !== 'undefined' ? root : {},
+	typeof root !== 'undefined' ? root : {},
 	typeof module !== 'undefined' ? module : {}
 );
 
@@ -168,7 +170,7 @@ if (!String.prototype.xTransform) {
 
 /* jshint ignore:start */
 if (typeof(JSON) === 'undefined') {
-	global.JSON = {
+	root.JSON = {
 		parse: function (sJSON) { return eval("(" + sJSON + ")"); },
 		stringify: function (vContent) {
 			if (vContent instanceof Object) {
@@ -466,7 +468,7 @@ if (!JSON.mtrace) {
 	JSON.mtrace = function(root, hits, xres) {
 		'use strict';
 
-		var win       = global,
+		var win       = root,
 			stringify = JSON.stringify,
 			sroot     = stringify( root, null, '\t' ).replace(/\t/g, ''),
 			trace     = [],
@@ -531,7 +533,6 @@ Defiant.node.selectNodes = function(XNode, XPath) {
 		}
 		return res;
 	} else {
-		// return XNode.selectNodes(XPath);
 		return xpath.select(XPath, XNode);
 	}
 };
@@ -582,7 +583,7 @@ Defiant.node.toJSON = function(xnode, stringify) {
 
 	var interpret = function(leaf) {
 			var obj = {},
-				win = global,
+				win = root,
 				attr,
 				type,
 				item,

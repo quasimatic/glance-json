@@ -1,5 +1,5 @@
 require('./defiant');
-import parser from 'glance-parser';
+import parse from 'glance-parser';
 import extensions from './options';
 import shortestPath from './shortest-path';
 import {jsonSearch} from './query';
@@ -54,7 +54,7 @@ let targetIntersections = (json, targets) => {
 
 function CreateGlanceJSON() {
 	this.selector = (json, reference) => {
-		let scopeTargets = parser.parse(reference);
+		let scopeTargets = parse(reference);
 
 		let result = processScopes(json, scopeTargets);
 		let jsonResult = result.map(r => r.json);
