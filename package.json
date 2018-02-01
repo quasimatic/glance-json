@@ -28,6 +28,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-loader": "7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "eslint": "^4.16.0",
@@ -41,9 +42,15 @@
     ],
     "presets": [
       "env"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
     ]
   },
   "dependencies": {
+    "@arr/filter": "^1.0.0",
+    "@arr/foreach": "^1.0.0",
+    "@arr/map": "^1.0.0",
     "@arr/reduce": "^1.0.0",
     "glance-parser": "0.0.5",
     "window-or-global": "^1.0.1",

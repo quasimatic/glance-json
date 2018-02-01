@@ -1,6 +1,6 @@
 require('./defiant');
 import parse from 'glance-parser';
-import extensions from './options';
+import extensions from './options/old-index';
 import shortestPath from './shortest-path';
 import {jsonSearch} from './query';
 
