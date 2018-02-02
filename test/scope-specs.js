@@ -1,4 +1,4 @@
-import glanceJSON from '../src/glance2';
+import glanceJSON from '../src/index';
 
 describe('Scope', () => {
 	it('should narrow result to scope', () => {

@@ -1,13 +1,16 @@
 var webpack = require('webpack');
 
 module.exports = {
-	entry: './src/browser.js',
+	entry: './src/index.js',
 	output: {
 		path: __dirname,
-		filename: 'dist/glance-json.js'
+		filename: 'dist/glance-json.js',
+		libraryTarget: 'assign',
+		library: 'glanceJSON',
+		libraryExport: 'default'
 	},
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin()
+		new webpack.optimize.UglifyJsPlugin(),
 	],
 	module: {
 		rules: [
@@ -17,7 +20,7 @@ module.exports = {
 				use: {
 					loader: 'babel-loader',
 					options: {
-						presets: ['env']
+						presets: ['es2015']
 					}
 				}
 			}

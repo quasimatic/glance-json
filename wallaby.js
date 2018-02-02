@@ -17,7 +17,7 @@ module.exports = function(wallaby) {
 
 		compilers: {
 			'**/*.js*': wallaby.compilers.babel({
-				presets: ['env'],
+				presets: ['es2015'],
 				plugins: [
 					'transform-object-rest-spread'
 				],

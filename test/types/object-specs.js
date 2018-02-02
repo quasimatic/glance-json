@@ -1,4 +1,4 @@
-import glanceJSON from '../../src/glance2';
+import glanceJSON from '../../src/index';
 
 describe('Object', () => {
 	it('should return item if blank reference', () => {

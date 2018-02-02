@@ -27,7 +27,7 @@ describe('Intersections', () => {
 		}, 'firstname ^ unique > id').should.equal('subject');
 	});
 
-	it('should intersect of array values', () => {
+	it('should intersect an array for values', () => {
 		glanceJSON({
 			people: [
 				{
