@@ -122,7 +122,7 @@ function processIntersects(survey, intersects) {
 			for (let subject of filteredResults) {
 				let subjectAncestorLength = subject.ancestors.length + 1;
 
-				if(subjectAncestorLength.size === parentIndex)
+				if(subjectAncestorLength === parentIndex)
 					continue;
 
 				let subParent = subject.ancestors[parentIndex];
@@ -130,7 +130,7 @@ function processIntersects(survey, intersects) {
 				for (let scope of filteredScopes) {
 					let scopeAncestorLength = scope.ancestors.length + 1;
 
-					if(scopeAncestorLength.size === parentIndex)
+					if(scopeAncestorLength === parentIndex)
 						continue;
 
 					let scopeParent = scope.ancestors[parentIndex];
@@ -138,22 +138,24 @@ function processIntersects(survey, intersects) {
 					//
 					// (subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)) < shortest.length
 					//
+					let scopeIsContainerOffset = 0;
+					if(subject.ancestors.indexOf(scope) !== -1) {
+						scopeIsContainerOffset = subject.ancestors.indexOf(scope) + 1;
+					}
+
 					if(subParent !== scopeParent) {
 						if(shortest.length || shortest.length === 0) {
-							if((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)) < shortest.length) {
+							if(((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset < shortest.length) {
 								shortest.nodes = [subject];
-								shortest.length = (subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1));
+								shortest.length = ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset;
 							}
-							else if((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)) === shortest.length) {
-								console.log('adding node');
+							else if(((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset === shortest.length) {
 								shortest.nodes.push(subject);
 							}
 						}
 						else {
-							console.log('here');
 							shortest.nodes.push(subject);
-							shortest.length = (subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1));
-							console.log(shortest.length);
+							shortest.length = ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset;
 						}
 					}
 					else {

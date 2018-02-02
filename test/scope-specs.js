@@ -48,62 +48,71 @@ describe('Scope', () => {
 			'scope > subject').should.deep.equal(['subject 2', 'subject 1']);
 	});
 
-	// it('asflkjsaflkdjf should support multiple scopes', () => {
-	// 	glanceJSON({
-	// 		container: [
-	// 			{
-	// 				container2: {
-	// 					scope: 'scope 1',
-	// 					subject: 'subject 1'
-	// 				},
-	// 				scope: 'scope 12',
-	// 				subject: 'subject 1.2'
-	// 			},
-	// 			{
-	// 				scope: 'scope 2',
-	// 				subject: 'subject 2'
-	// 			}
-	// 		]
-	// 	}, 'container2 > scope 1 > subject 1').should.equal('subject 1');
-	// });
+	it('should narrow down if the scope is the container', () => {
+		glanceJSON({
+				container: {
+					scope: 'scope 1',
+					subject: 'subject 1'
+				},
 
-	// it('should find the same set if the subject is the same as the previous scope', () => {
-	// 	glanceJSON({
-	// 		container: [
-	// 			{
-	// 				container2: {
-	// 					scope: 'scope 1',
-	// 					subject: 'subject 1'
-	// 				},
-	// 				scope: 'scope 1',
-	// 				subject: 'subject 1.2'
-	// 			},
-	// 			{
-	// 				scope: 'scope 2',
-	// 				subject: 'subject 2'
-	// 			}
-	// 		]
-	// 	}, 'container2 > scope 1 > scope 1').should.equal('scope 1');
-	// });
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
+	});
 
-	// it('should support multiple scopes', () => {
-	// 	glanceJSON({
-	// 		container: [
-	// 			{
-	// 				container2: {
-	// 					scope: 'scope 1',
-	// 					subject: 'subject 1'
-	// 				},
-	// 				scope: 'scope 1',
-	// 				subject: 'subject 1.2'
-	// 			},
-	// 			{
-	// 				scope: 'scope 2',
-	// 				subject: 'subject 2'
-	// 			}
-	// 		]
-	// 	}, 'container2 > scope 1 > subject').should.equal('subject 1');
-	// });
+	it('should narrow down if the scope is an ancestor', () => {
+		glanceJSON({
+				container: {
+					outerscope: {
+						scope: 'scope 1',
+						subject: 'subject 1'
+					}
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
+	});
+
+	it('should find the same set if the subject is the same as the previous scope', () => {
+		glanceJSON({
+			container: [
+				{
+					container2: {
+						scope: 'scope 1',
+						subject: 'subject 1'
+					},
+					scope: 'scope 1',
+					subject: 'subject 1.2'
+				},
+				{
+					scope: 'scope 2',
+					subject: 'subject 2'
+				}
+			]
+		}, 'container2 > scope 1 > scope 1').should.equal('scope 1');
+	});
+
+	it('should support multiple scopes', () => {
+		glanceJSON({
+			container: [
+				{
+					container2: {
+						scope: 'scope 1',
+						subject: 'subject 1'
+					},
+					scope: 'scope 1',
+					subject: 'subject 1.2'
+				},
+				{
+					scope: 'scope 2',
+					subject: 'subject 2'
+				}
+			]
+		}, 'container2 > scope 1 > subject').should.equal('subject 1');
+	});
 
 	it('should not find matches if scope does not match', () => {
 		glanceJSON({
@@ -122,5 +131,5 @@ describe('Scope', () => {
 				}
 			]
 		}, 'missing > scope 1 > subject').should.deep.equal([]);
-	})
+	});
 });
