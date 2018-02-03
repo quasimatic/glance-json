@@ -2,9 +2,26 @@ import parse from 'glance-parser';
 import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
 import map from '@arr/map';
-import * as options from './options';
+import options from './options';
 
-RegExp.escape= function(s) {
+let defaultLocatorOptions = reduce(['key', 'value'], (r, k) => {
+	r[k] = options[k];
+	return r;
+}, {});
+
+let defaultScopeOptions = reduce(['limit-scope'], (r, k) => {
+	r[k] = options[k];
+	return r;
+}, {});
+
+let defaultIntersectOptions = reduce(['value-or-pair-type','intersect'], (r, k) => {
+	r[k] = options[k];
+	return r;
+}, {});
+
+let defaultOptions = {...defaultLocatorOptions, ...defaultIntersectOptions}
+
+RegExp.escape = function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 };
 
@@ -69,36 +86,14 @@ function prepData(data, container, parentNode = null) {
 	// Prep Arrays
 }
 
-function processLocators(survey, target) {
-	let results = [];
-
-	results = reduce(Object.values(options), (r, o) => r.concat(o.locate({target, survey})), []);
-
-	if(target.label === 'pair') {
-		results = map(survey.scopes, r => r.parentNode);
-	}
-	else {
-		results = results.map(r => {
-			if(r.type === 'pair')
-				return r.valueNode;
-
-			return r;
-		});
-	}
-
-	return results;
-}
-
 function processTarget(survey, target) {
-	let located = processLocators(survey, target);
+	survey.targets = [];
+	survey = reduce(Object.keys(defaultOptions), (r, key) => defaultOptions[key]({
+		target,
+		survey
+	}), null);
 
-
-
-	// Filter
-
-	// Intersects
-
-	return Array.from(new Set(located));
+	return Array.from(new Set(survey.targets));
 }
 
 function processIntersects(survey, intersects) {
@@ -107,86 +102,15 @@ function processIntersects(survey, intersects) {
 		return processTarget(survey, target);
 	}, []);
 
-	if(survey.scopes && survey.scopes.length > 0) {
-		let newContainers = new Container();
+	survey.targets = subjectResults;
 
-		let shortest = {
-			length: null,
-			nodes: []
-		};
-
-		let filteredResults = new Set(subjectResults);
-		let filteredScopes = new Set(survey.scopes);
-
-		for (let parentIndex = 0; ; ++parentIndex) {
-			if(filteredScopes.size === 0 || filteredResults.length === 0)
-				break;
-
-			let nextRoundSubjects = new Set();
-			let nextRoundScopes = new Set();
-
-			for (let subject of filteredResults) {
-				let subjectAncestorLength = subject.ancestors.length + 1;
-
-				if(subjectAncestorLength === parentIndex)
-					continue;
-
-				let subParent = subject.ancestors[parentIndex];
-
-				for (let scope of filteredScopes) {
-					let scopeAncestorLength = scope.ancestors.length + 1;
-
-					if(scopeAncestorLength === parentIndex)
-						continue;
-
-					let scopeParent = scope.ancestors[parentIndex];
-
-					//
-					// (subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)) < shortest.length
-					//
-					let scopeIsContainerOffset = 0;
-					if(subject.ancestors.indexOf(scope) !== -1) {
-						scopeIsContainerOffset = subject.ancestors.indexOf(scope) + 1;
-					}
-
-					if(subParent !== scopeParent) {
-						if(shortest.length || shortest.length === 0) {
-							if(((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset < shortest.length) {
-								shortest.nodes = [subject];
-								shortest.length = ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset;
-							}
-							else if(((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset === shortest.length) {
-								shortest.nodes.push(subject);
-							}
-						}
-						else {
-							shortest.nodes.push(subject);
-							shortest.length = ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset;
-						}
-					}
-					else {
-						nextRoundSubjects.add(subject);
-						nextRoundScopes.add(scope);
-					}
-				}
-			}
-
-			filteredResults = nextRoundSubjects;
-			filteredScopes = nextRoundScopes;
-		}
-
-		return shortest.nodes;
-	}
-
-	return subjectResults;
+	return reduce(Object.keys(defaultScopeOptions), (r, key) => r.concat(defaultScopeOptions[key]({survey}).targets), []);
 }
 
 function processSurvey(survey) {
 	let container = new Container();
 	prepData(survey.data, container);
 	survey.container = container;
-
-	survey.subjectTarget = survey.remainingTargets[survey.remainingTargets.length - 1];
 
 	let result = reduce(survey.remainingTargets, (scopes, intersects) => {
 		if(scopes && scopes.length === 0)
@@ -214,8 +138,6 @@ export function glanceJSON(data, reference) {
 export default glanceJSON;
 
 /*
-  exact-text
-  contains-text
   case-sensitive
   case-insensitive
   n
@@ -223,8 +145,6 @@ export default glanceJSON;
   starts-with
   ends-with
 
-  in-key
-  in-value
   in-type
     array
     string

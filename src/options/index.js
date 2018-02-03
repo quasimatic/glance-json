@@ -1,4 +1,7 @@
-import inKey from './in-key';
-import inValue from './in-value';
+import inKey from './key';
+import inValue from './value';
+import limitScope from './limit-scope';
+import intersect from './intersect';
+import valueOrPairType from './value-or-pair-type'
 
-export {inKey, inValue};
+export default Object.assign({}, inKey, inValue, limitScope, intersect, valueOrPairType);
