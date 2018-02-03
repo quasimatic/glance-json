@@ -14,12 +14,12 @@ let defaultScopeOptions = reduce(['limit-scope'], (r, k) => {
 	return r;
 }, {});
 
-let defaultIntersectOptions = reduce(['value-or-pair-type','intersect'], (r, k) => {
+let defaultIntersectOptions = reduce(['value-or-pair-type', 'intersect'], (r, k) => {
 	r[k] = options[k];
 	return r;
 }, {});
 
-let defaultOptions = {...defaultLocatorOptions, ...defaultIntersectOptions}
+let defaultOptions = {...defaultLocatorOptions, ...defaultIntersectOptions};
 
 RegExp.escape = function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -129,8 +129,6 @@ export function glanceJSON(data, reference) {
 export default glanceJSON;
 
 /*
-  case-sensitive
-  case-insensitive
   n
   -n
   starts-with
