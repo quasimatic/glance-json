@@ -34,9 +34,6 @@ export default {
 
 						let scopeParent = scope.ancestors[parentIndex];
 
-						//
-						// (subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)) < shortest.length
-						//
 						let scopeIsContainerOffset = 0;
 						if(subject.ancestors.indexOf(scope) !== -1) {
 							scopeIsContainerOffset = subject.ancestors.indexOf(scope) + 1;

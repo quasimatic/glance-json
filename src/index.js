@@ -80,29 +80,20 @@ function prepData(data, container, parentNode = null) {
 	}
 
 	return node;
-
-	// Prep keys with values
-	// Prep Values
-	// Prep Arrays
-}
-
-function processTarget(survey, target) {
-	survey.targets = [];
-	survey = reduce(Object.keys(defaultOptions), (r, key) => defaultOptions[key]({
-		target,
-		survey
-	}), null);
-
-	return Array.from(new Set(survey.targets));
 }
 
 function processIntersects(survey, intersects) {
-	let subjectResults = reduce(intersects, (result, target) => {
-		survey.intersections = result;
-		return processTarget(survey, target);
-	}, []);
+	survey = reduce(intersects, (result, target) => {
+		survey.subjects = result.targets;
+		survey.targets = [];
+		survey = reduce(Object.keys(defaultOptions), (r, key) => defaultOptions[key]({
+			target,
+			survey
+		}), null);
 
-	survey.targets = subjectResults;
+		survey.targets = Array.from(new Set(survey.targets));
+		return survey;
+	}, []);
 
 	return reduce(Object.keys(defaultScopeOptions), (r, key) => r.concat(defaultScopeOptions[key]({survey}).targets), []);
 }

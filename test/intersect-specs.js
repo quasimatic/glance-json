@@ -14,7 +14,7 @@ describe('Intersections', () => {
 		glanceJSON({
 			people: [
 				{
-					id: 'invalid',
+					id: 'bad',
 					firstname: 'firstname',
 					lastname: 'lastname'
 				},
@@ -70,6 +70,6 @@ describe('Intersections', () => {
 					lastname: 'unique lastname'
 				}
 			]
-		}, 'firstname #value-contains ^ unique #value-contains > id').should.equal('subject');
+		}, 'firstname #value ^ unique #value > id').should.equal('subject');
 	});
 });
