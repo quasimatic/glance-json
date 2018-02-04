@@ -68,11 +68,11 @@ function prepData(data, container, parentNode = null) {
 
 function processIntersects(survey, intersects) {
 	return reduce(intersects, (result, target) => {
-		survey.subjects = result.targets;
-		survey.targets = [];
+		result.subjects = result.targets;
+		result.targets = [];
 
 		let execute = null;
-		survey = reduce([].concat(defaultOptions, target.options), (r, option) => {
+		result = reduce([].concat(defaultOptions, target.options), (r, option) => {
 			if(typeof(loadedOptions[option]) === 'function')
 				execute = loadedOptions[option];
 			else {
@@ -83,14 +83,14 @@ function processIntersects(survey, intersects) {
 			}
 
 			if(execute)
-				return execute({target, option, survey});
+				return execute({target, option, survey: r});
 
 			return r;
-		}, null);
+		}, result);
 
-		survey.targets = Array.from(new Set(survey.targets));
-		return survey;
-	}, []);
+		result.targets = Array.from(new Set(result.targets));
+		return result;
+	}, survey);
 }
 
 function processSurvey(survey) {
@@ -98,16 +98,23 @@ function processSurvey(survey) {
 	prepData(survey.data, container);
 	survey.container = container;
 
-	let result = reduce(survey.remainingTargets, (scopes, intersects) => {
-		if(scopes && scopes.length === 0)
-			return [];
+	survey = reduce(survey.remainingTargets, (r, intersects) => {
+		if(r.targets) {
+			if(r.targets.length === 0)
+				return r;
 
-		survey.scopes = scopes;
+			r.scopes = r.targets;
+			r.targets = [];
+		}
 
-		return processIntersects(survey, intersects).targets;
-	}, null);
+		return processIntersects(r, intersects);
+	}, survey);
 
-	result = result.map(r => r.value);
+	return processSubject({survey});
+}
+
+function processSubject({survey}) {
+	let result = survey.targets.map(r => r.value);
 
 	return result.length === 1 ? result[0] : result;
 }

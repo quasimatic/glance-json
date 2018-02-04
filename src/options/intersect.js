@@ -45,7 +45,8 @@ export default {
 			commonAncestor = currentAncestor;
 		}
 
-		survey.targets = [commonAncestor];
+		if(commonAncestor)
+			survey.targets = [commonAncestor];
 
 		return survey;
 	}
