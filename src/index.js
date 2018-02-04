@@ -3,11 +3,6 @@ import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
 import options from './options';
 
-let loadedOptions = reduce(['key', 'value', 'indexer', 'value-or-pair-type', 'intersect', 'limit-scope'], (r, k) => {
-	r[k] = options[k];
-	return r;
-}, {});
-
 let defaultOptions = ['key', 'value', 'value-or-pair-type', 'intersect', 'limit-scope'];
 
 class Survey {
@@ -73,10 +68,10 @@ function processIntersects(survey, intersects) {
 
 		let execute = null;
 		result = reduce([].concat(defaultOptions, target.options), (r, option) => {
-			if(typeof(loadedOptions[option]) === 'function')
-				execute = loadedOptions[option];
+			if(typeof(options[option]) === 'function')
+				execute = options[option];
 			else {
-				let dynamicOption = loadedOptions[Object.keys(loadedOptions).find(k => loadedOptions[k].check ? loadedOptions[k].check({option}) : false)];
+				let dynamicOption = options[Object.keys(options).find(k => options[k].check ? options[k].check({option}) : false)];
 				if(dynamicOption) {
 					execute = dynamicOption.execute;
 				}

@@ -5,4 +5,4 @@ import intersect from './intersect';
 import valueOrPairType from './value-or-pair-type'
 import indexer from './indexer'
 
-export default Object.assign({}, inKey, inValue, limitScope, intersect, valueOrPairType, indexer);
+export default {...inKey, ...inValue, ...limitScope, ...intersect, ...valueOrPairType, ...indexer}
