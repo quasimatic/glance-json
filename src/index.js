@@ -19,9 +19,9 @@ let loadedIntersectOptions = reduce(['value-or-pair-type', 'intersect'], (r, k) 
 	return r;
 }, {});
 
-let loadedOptions = {...loadedLocatorOptions, ...loadedIntersectOptions};
+let loadedOptions = {...loadedLocatorOptions, ...loadedIntersectOptions, ...loadedScopeOptions};
 
-let defaultOptions = ['key', 'value', 'value-or-pair-type', 'intersect'];
+let defaultOptions = ['key', 'value', 'value-or-pair-type', 'intersect', 'limit-scope'];
 
 RegExp.escape = function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -84,22 +84,23 @@ function prepData(data, container, parentNode = null) {
 }
 
 function processIntersects(survey, intersects) {
-	survey = reduce(intersects, (result, target) => {
+	return reduce(intersects, (result, target) => {
 		survey.subjects = result.targets;
 		survey.targets = [];
+
+		let execute = null;
 		survey = reduce([].concat(defaultOptions, target.options), (r, option) => {
 			if(typeof(loadedOptions[option]) === 'function')
-				return loadedOptions[option]({
-					target,
-					option,
-					survey
-				});
+				execute = loadedOptions[option];
 			else {
 				let dynamicOption = loadedOptions[Object.keys(loadedOptions).find(k => loadedOptions[k].check ? loadedOptions[k].check({option}) : false)];
 				if(dynamicOption) {
-					return dynamicOption.execute({target, option, survey});
+					execute = dynamicOption.execute;
 				}
 			}
+
+			if(execute)
+				return execute({target, option, survey});
 
 			return r;
 		}, null);
@@ -107,8 +108,6 @@ function processIntersects(survey, intersects) {
 		survey.targets = Array.from(new Set(survey.targets));
 		return survey;
 	}, []);
-
-	return reduce(Object.keys(loadedScopeOptions), (r, key) => r.concat(loadedScopeOptions[key]({survey}).targets), []);
 }
 
 function processSurvey(survey) {
@@ -122,7 +121,7 @@ function processSurvey(survey) {
 
 		survey.scopes = scopes;
 
-		return processIntersects(survey, intersects);
+		return processIntersects(survey, intersects).targets;
 	}, null);
 
 	result = result.map(r => r.value);
