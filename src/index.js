@@ -3,7 +3,9 @@ import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
 import options from './options';
 
-let defaultOptions = ['key', 'value', 'value-or-pair-type', 'intersect', 'limit-scope'];
+let defaultOptions = ['key', 'value', 'value-type', 'intersect', 'limit-scope'];
+
+let subjectOptions = ['single'];
 
 class Survey {
 	constructor({data, reference}) {
@@ -109,9 +111,26 @@ function processSurvey(survey) {
 }
 
 function processSubject({survey}) {
-	let result = survey.targets.map(r => r.value);
+	let execute = null;
+	let result = reduce([].concat(subjectOptions), (r, option) => {
+		if(typeof(options[option]) === 'function')
+			execute = options[option];
+		else {
+			let dynamicOption = options[Object.keys(options).find(k => options[k].check ? options[k].check({option}) : false)];
+			if(dynamicOption) {
+				execute = dynamicOption.execute;
+			}
+		}
 
-	return result.length === 1 ? result[0] : result;
+		if(execute) {
+			let intersects = survey.remainingTargets[survey.remainingTargets.length - 1];
+			return execute({target: intersects[intersects.length - 1], survey: r});
+		}
+
+		return r;
+	}, survey);
+
+	return Object.prototype.toString.call(result.targets) === '[object Array]' ? result.targets.map(r => r.value) : result.targets.value;
 }
 
 export function glanceJSON(data, reference) {

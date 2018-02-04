@@ -22,9 +22,9 @@ describe('Object', () => {
 	});
 
 	it('should not find a key using exact', function() {
-		glanceJSON({
+		expect(() => glanceJSON({
 			key1: 'value1'
-		}, 'key #exact-text').should.deep.equal([]);
+		}, 'key #exact-text')).to.throw("Nothing found");
 	});
 
 	it('should find a key using exact', function() {
@@ -34,9 +34,9 @@ describe('Object', () => {
 	});
 
 	it('should not find a key using exact case sensitive', function() {
-		glanceJSON({
+		expect(() => glanceJSON({
 			KEY1: 'value1'
-		}, 'key1 #exact-text #case-sensitive').should.deep.equal([]);
+		}, 'key1 #exact-text #case-sensitive')).to.throw('Nothing found');
 	});
 
 	it('should find a key using exact case sensitive', function() {
@@ -52,9 +52,9 @@ describe('Object', () => {
 	});
 
 	it('should not matchevalue with exact-text', () => {
-		glanceJSON({
+		expect(() => glanceJSON({
 			key1: 'value1'
-		}, 'value #exact-text').should.deep.equal([]);
+		}, 'value #exact-text')).to.throw('Nothing found');
 	});
 
 	it('should match value with exact-text', () => {
