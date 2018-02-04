@@ -63,6 +63,22 @@ describe('Object', () => {
 		}, 'value1 #exact-text').should.deep.equal('value1');
 	});
 
+	it('should find key starting with label', () => {
+		glanceJSON({'abcdef': '123abc', '123abc456': 'invalid'}, 'abc #starts-with').should.deep.equal('123abc');
+	});
+
+	it('should find value starting with label', () => {
+		glanceJSON({'abcdef': '123abc', 'aaa123bbb': 'invalid'}, '123 #starts-with').should.deep.equal('123abc');
+	});
+
+	it('should find key ending with label', () => {
+		glanceJSON({'abcdef': '123abc', '123def456': '444def555'}, 'def #ends-with').should.deep.equal('123abc');
+	});
+
+	it('should find value ending with label', () => {
+		glanceJSON({'abcdef': '123def', 'aaa123bbb': '444def555'}, 'def #ends-with').should.deep.equal('123def');
+	});
+
 	// it('should match value and return object', () => {
 	// 	glanceJSON({
 	// 		key1: 'value1'
