@@ -1,9 +1,10 @@
 import reduce from '@arr/reduce';
 import matchString from '../match-string';
+import escapeRegex from '../escape-regex';
 
 export default {
 	'key': function({target, survey}) {
-		let escapedLabel = RegExp.escape(target.label);
+		let escapedLabel = escapeRegex(target.label);
 
 		let search = new RegExp(matchString(escapedLabel, target.options), target.options.indexOf('case-sensitive') !== -1 ? '' : 'i');
 

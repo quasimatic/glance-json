@@ -1,31 +1,14 @@
 import parse from 'glance-parser';
 import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
-import map from '@arr/map';
 import options from './options';
 
-let loadedLocatorOptions = reduce(['key', 'value', 'indexer'], (r, k) => {
+let loadedOptions = reduce(['key', 'value', 'indexer', 'value-or-pair-type', 'intersect', 'limit-scope'], (r, k) => {
 	r[k] = options[k];
 	return r;
 }, {});
-
-let loadedScopeOptions = reduce(['limit-scope'], (r, k) => {
-	r[k] = options[k];
-	return r;
-}, {});
-
-let loadedIntersectOptions = reduce(['value-or-pair-type', 'intersect'], (r, k) => {
-	r[k] = options[k];
-	return r;
-}, {});
-
-let loadedOptions = {...loadedLocatorOptions, ...loadedIntersectOptions, ...loadedScopeOptions};
 
 let defaultOptions = ['key', 'value', 'value-or-pair-type', 'intersect', 'limit-scope'];
-
-RegExp.escape = function(s) {
-	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-};
 
 class Survey {
 	constructor({data, reference}) {
@@ -141,9 +124,6 @@ export function glanceJSON(data, reference) {
 export default glanceJSON;
 
 /*
-  starts-with
-  ends-with
-
   in-type
     array
     string
