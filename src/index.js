@@ -4,22 +4,24 @@ import forEach from '@arr/foreach';
 import map from '@arr/map';
 import options from './options';
 
-let defaultLocatorOptions = reduce(['key', 'value'], (r, k) => {
+let loadedLocatorOptions = reduce(['key', 'value', 'indexer'], (r, k) => {
 	r[k] = options[k];
 	return r;
 }, {});
 
-let defaultScopeOptions = reduce(['limit-scope'], (r, k) => {
+let loadedScopeOptions = reduce(['limit-scope'], (r, k) => {
 	r[k] = options[k];
 	return r;
 }, {});
 
-let defaultIntersectOptions = reduce(['value-or-pair-type', 'intersect'], (r, k) => {
+let loadedIntersectOptions = reduce(['value-or-pair-type', 'intersect'], (r, k) => {
 	r[k] = options[k];
 	return r;
 }, {});
 
-let defaultOptions = {...defaultLocatorOptions, ...defaultIntersectOptions};
+let loadedOptions = {...loadedLocatorOptions, ...loadedIntersectOptions};
+
+let defaultOptions = ['key', 'value', 'value-or-pair-type', 'intersect'];
 
 RegExp.escape = function(s) {
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -30,7 +32,6 @@ class Survey {
 		this.data = data;
 		this.reference = reference;
 		this.remainingTargets = parse(reference);
-		this.result;
 	}
 }
 
@@ -86,16 +87,28 @@ function processIntersects(survey, intersects) {
 	survey = reduce(intersects, (result, target) => {
 		survey.subjects = result.targets;
 		survey.targets = [];
-		survey = reduce(Object.keys(defaultOptions), (r, key) => defaultOptions[key]({
-			target,
-			survey
-		}), null);
+		survey = reduce([].concat(defaultOptions, target.options), (r, option) => {
+			if(typeof(loadedOptions[option]) === 'function')
+				return loadedOptions[option]({
+					target,
+					option,
+					survey
+				});
+			else {
+				let dynamicOption = loadedOptions[Object.keys(loadedOptions).find(k => loadedOptions[k].check ? loadedOptions[k].check({option}) : false)];
+				if(dynamicOption) {
+					return dynamicOption.execute({target, option, survey});
+				}
+			}
+
+			return r;
+		}, null);
 
 		survey.targets = Array.from(new Set(survey.targets));
 		return survey;
 	}, []);
 
-	return reduce(Object.keys(defaultScopeOptions), (r, key) => r.concat(defaultScopeOptions[key]({survey}).targets), []);
+	return reduce(Object.keys(loadedScopeOptions), (r, key) => r.concat(loadedScopeOptions[key]({survey}).targets), []);
 }
 
 function processSurvey(survey) {
@@ -129,8 +142,6 @@ export function glanceJSON(data, reference) {
 export default glanceJSON;
 
 /*
-  n
-  -n
   starts-with
   ends-with
 
