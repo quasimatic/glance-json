@@ -35,7 +35,7 @@ export default {
 					let i = 1;
 					for (let ancestor of scope.ancestors.reverse()) {
 						if(ancestor.type === 'object') {
-							if(!matched.length || length === matched.length) {
+							if(!matched.length || i === matched.length) {
 								matched.length = i;
 								matched.nodes.push(ancestor);
 							}
@@ -66,7 +66,7 @@ export default {
 					let i = 1;
 					for (let ancestor of scope.ancestors.reverse()) {
 						if(ancestor.type === 'array') {
-							if(!matched.length || length === matched.length) {
+							if(!matched.length || i === matched.length) {
 								matched.length = i;
 								matched.nodes.push(ancestor);
 							}
@@ -96,8 +96,8 @@ export default {
 				else {
 					let i = 1;
 					for (let ancestor of scope.ancestors.reverse()) {
-						if(ancestor.type === 'pair') {
-							if(!matched.length || length === matched.length) {
+						if(ancestor.type === 'pair' && ancestor.parentNode.type !== 'array') {
+							if(!matched.length || i === matched.length) {
 								matched.length = i;
 								matched.nodes.push(ancestor.keyNode);
 							}

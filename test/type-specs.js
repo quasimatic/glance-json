@@ -13,11 +13,19 @@ describe('Types', () => {
 		glanceJSON({subject: 5}, 'subject > object').should.deep.equal({subject: 5});
 	});
 
+	it('should return the object of a value', () => {
+		glanceJSON({subject: [1,2,3,4,5]}, '5 > object').should.deep.equal({subject: [1,2,3,4,5]});
+	});
+
 	it('should return the key', function() {
 		glanceJSON({subject: 5}, 'subject > key').should.deep.equal('subject');
 	});
 
-	it('should return the key', function() {
+	it('should return the key of a deeper value', function() {
+		glanceJSON({subject: [1,2,3,4,5]}, '5 > key').should.deep.equal('subject');
+	});
+
+	it('should return the array', function() {
 		glanceJSON([1,2,3], '2 > array').should.deep.equal([1,2,3]);
 	});
 
