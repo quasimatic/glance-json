@@ -5,7 +5,6 @@ function distance({subjectAncestorLength,scopeAncestorLength, parentIndex, scope
 export default {
 	'limit-scope': function({survey}) {
 		if(survey.scopes && survey.scopes.length > 0) {
-			// console.log(survey)
 			let shortest = {
 				length: null,
 				nodes: []

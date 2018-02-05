@@ -96,7 +96,7 @@ function processIntersects(survey, intersects) {
 
 		}, result);
 
-		result.targets = Array.from(new Set(result.targets));
+		result.targets = Object.prototype.toString.call(result.targets) === '[object Array]'? Array.from(new Set(result.targets)): result.targets;
 		return result;
 	}, survey);
 }
@@ -123,7 +123,7 @@ function processSurvey(survey) {
 
 function processSubject({survey}) {
 	let execute = null;
-	let result = reduce([].concat(subjectOptions), (r, option) => {
+	let result = reduce(subjectOptions, (r, option) => {
 		if(typeof(options[option]) === 'function')
 			execute = options[option];
 
