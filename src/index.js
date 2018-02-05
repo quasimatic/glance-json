@@ -54,6 +54,12 @@ function prepData(data, container, parentNode = null) {
 				container.keyValuePairNodes[k].push(node);
 
 			node.valueNode = prepData(data[k], container, node);
+			node.keyNode = {
+				ancestors: node && node.ancestors ? Array.from(node.ancestors) : [],
+				parentNode: node,
+				value: k,
+				type: typeof(k)
+			};
 		});
 	}
 	else {

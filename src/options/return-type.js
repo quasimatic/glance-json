@@ -52,6 +52,21 @@ export default {
 			survey.targets = matched.nodes;
 		}
 
+		if(target.label === 'key' && survey.targets.length === 0 && survey.scopes) {
+			let matched = {
+				nodes: []
+			};
+
+			for (let scope of survey.scopes) {
+				if(scope.type === 'pair') {
+					matched.length = 0;
+					matched.nodes.push(scope.keyNode);
+				}
+			}
+
+			survey.targets = matched.nodes;
+		}
+
 		return survey;
 	}
 };
