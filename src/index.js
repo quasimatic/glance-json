@@ -150,13 +150,3 @@ export function glanceJSON(data, reference) {
 
 export default glanceJSON;
 
-/*
-  in-type
-    array
-    string
-  	number
-  	object
-  	boolean
-*/
-
-

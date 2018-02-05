@@ -62,9 +62,37 @@ export default {
 					matched.length = 0;
 					matched.nodes.push(scope.keyNode);
 				}
+				else {
+					let i = 1;
+					for (let ancestor of scope.ancestors.reverse()) {
+						if(ancestor.type === 'pair') {
+							if(!matched.length || length === matched.length) {
+								matched.length = i;
+								matched.nodes.push(ancestor.keyNode);
+							}
+							else if(i < matched.length) {
+								matched.length = i;
+								matched.nodes = [ancestor.keyNode];
+							}
+						}
+						++i;
+					}
+				}
 			}
 
 			survey.targets = matched.nodes;
+		}
+
+		if(['string', 'boolean', 'number'].indexOf(target.label) !== -1 && survey.targets.length === 0 && survey.scopes) {
+			let nodes = [];
+
+			for (let scope of survey.scopes) {
+				if(scope.type === target.label) {
+					nodes.push(scope);
+				}
+			}
+
+			survey.targets = nodes;
 		}
 
 		return survey;
