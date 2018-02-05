@@ -28,7 +28,6 @@ let o = {
 		return survey;
 	},
 	'many': function({target, survey}) {
-		survey.targets = Object.prototype.toString.call(survey.targets) === '[object Array]' ? survey.targets : [survey.targets];
 		return survey;
 	}
 };
