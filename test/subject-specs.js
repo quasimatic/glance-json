@@ -20,6 +20,10 @@ describe('Subject: single', () => {
 	it('should get an object', () => {
 		glanceJSON({subject: {a: 1, b: 2}}, 'subject').should.deep.equal({a: 1, b: 2});
 	});
+
+	it('should throw an error if many found', () => {
+		expect(() => glanceJSON({subject: {a: 1, b: 1}}, '1')).to.throw('Found more than one. Please narrow down the selection or use #many');
+	})
 });
 
 describe('Subject: multiple', () => {

@@ -6,7 +6,7 @@ export default {
 		if(target.options.indexOf('property') !== -1)
 			return survey;
 
-		if(target.options.indexOf('type') === -1 && survey.remainingTargets[survey.remainingTargets.length -1].indexOf(target) !== -1) {
+		if(target.options.indexOf('type') === -1 && survey.remainingTargets[survey.remainingTargets.length - 1].indexOf(target) !== -1) {
 			survey.targets = Array.from(new Set(map(survey.targets, r => {
 				if(r.type === 'pair')
 					return r.valueNode;

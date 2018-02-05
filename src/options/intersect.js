@@ -25,8 +25,6 @@ export default {
 		let commonAncestor;
 
 		for (let parentIndex = 0; ; ++parentIndex) {
-			if(parentIndex === 10) break;
-
 			let currentAncestor = null;
 
 			for (let subject of survey.subjects) {

@@ -17,14 +17,14 @@ describe('Object', () => {
 
 	it('should get object from key contains', function() {
 		glanceJSON({
-			key1: 'value1'
-		}, 'key #contains-text').should.deep.equal('value1');
+			item1: 'value1'
+		}, 'item #contains-text').should.deep.equal('value1');
 	});
 
 	it('should not find a key using exact', function() {
 		expect(() => glanceJSON({
-			key1: 'value1'
-		}, 'key #exact-text')).to.throw("Nothing found");
+			subject1: 'value1'
+		}, 'subject #exact-text')).to.throw("Nothing found");
 	});
 
 	it('should find a key using exact', function() {
@@ -47,8 +47,8 @@ describe('Object', () => {
 
 	it('should return the matched value', () => {
 		glanceJSON({
-			key1: 'value1'
-		}, 'value').should.deep.equal('value1');
+			key1: 'subject1'
+		}, 'subject').should.deep.equal('subject1');
 	});
 
 	it('should not matchevalue with exact-text', () => {
