@@ -50,6 +50,17 @@ describe('Types: scope', () => {
 			subject: 5,
 		});
 	});
+
+	it('should find the object closest to value', function() {
+		glanceJSON({
+			container: {
+				subject: {a: 5},
+				data: [1,2,3,4,5]
+			}
+		}, '5 > object').should.deep.equal({
+			a: 5,
+		});
+	});
 });
 
 describe('Types: intersect', () => {
