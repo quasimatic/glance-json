@@ -1,6 +1,6 @@
 import glanceJSON from '../src/index';
 
-describe('Types', () => {
+describe('Types: scope', () => {
 	it('should return value by default', () => {
 		glanceJSON({subject: 5}, 'subject').should.equal(5);
 	});
@@ -39,5 +39,19 @@ describe('Types', () => {
 
 	it('should return a boolean', function() {
 		glanceJSON({subject: true, subject2: "true"}, 'true > boolean').should.deep.equal(true);
+	});
+});
+
+describe('Types: intersect', () => {
+	it('should match a string', function() {
+		glanceJSON({subject: 5, subject2: "5"}, '5 ^ string').should.deep.equal("5");
+	});
+
+	it('should match a number', function() {
+		glanceJSON({subject: 5, subject2: "5"}, '5 ^ number').should.deep.equal(5);
+	});
+
+	it('should match a boolean', function() {
+		glanceJSON({subject: true, subject2: "true"}, 'true ^ boolean').should.deep.equal(true);
 	});
 });

@@ -3,7 +3,7 @@ import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
 import options from './options';
 
-let defaultOptions = ['key', 'value', 'intersect', 'limit-scope'];
+let defaultOptions = ['key', 'value', 'intersect', 'limit-scope', 'type'];
 
 let subjectOptions = ['return-type', 'single'];
 
