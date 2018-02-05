@@ -17,6 +17,10 @@ describe('Types', () => {
 		glanceJSON({subject: 5}, 'subject > key').should.deep.equal('subject');
 	});
 
+	it('should return the key', function() {
+		glanceJSON([1,2,3], '2 > array').should.deep.equal([1,2,3]);
+	});
+
 	it('should return a string', function() {
 		glanceJSON({subject: 5, subject2: "5"}, '5 > string').should.deep.equal("5");
 	});

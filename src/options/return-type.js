@@ -52,6 +52,37 @@ export default {
 			survey.targets = matched.nodes;
 		}
 
+		if(target.label === 'array' && survey.targets.length === 0 && survey.scopes) {
+			let matched = {
+				nodes: []
+			};
+
+			for (let scope of survey.scopes) {
+				if(scope.type === 'array') {
+					matched.length = 0;
+					matched.nodes.push(scope.valueNode);
+				}
+				else {
+					let i = 1;
+					for (let ancestor of scope.ancestors.reverse()) {
+						if(ancestor.type === 'array') {
+							if(!matched.length || length === matched.length) {
+								matched.length = i;
+								matched.nodes.push(ancestor);
+							}
+							else if(i < matched.length) {
+								matched.length = i;
+								matched.nodes = [ancestor];
+							}
+						}
+						++i;
+					}
+				}
+			}
+
+			survey.targets = matched.nodes;
+		}
+
 		if(target.label === 'key' && survey.targets.length === 0 && survey.scopes) {
 			let matched = {
 				nodes: []
