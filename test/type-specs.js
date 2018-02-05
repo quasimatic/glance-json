@@ -54,4 +54,16 @@ describe('Types: intersect', () => {
 	it('should match a boolean', function() {
 		glanceJSON({subject: true, subject2: "true"}, 'true ^ boolean').should.deep.equal(true);
 	});
+
+	it('should match a string with string first', function() {
+		glanceJSON({subject: 5, subject2: "5", subject3: "3"}, 'string ^ 5').should.deep.equal("5");
+	});
+
+	it('should match a number', function() {
+		glanceJSON({subject: 5, subject2: "5", subject3: 3}, 'number ^ 5').should.deep.equal(5);
+	});
+
+	it('should match a boolean', function() {
+		glanceJSON({subject: true, subject2: "true", subject3: false}, 'boolean ^ true').should.deep.equal(true);
+	});
 });
