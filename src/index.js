@@ -5,7 +5,7 @@ import options from './options';
 
 let defaultOptions = ['key', 'value', 'type', 'intersect', 'limit-scope'];
 
-let subjectOptions = ['return-type', 'single'];
+let subjectOptions = ['return-type', 'one-or-many'];
 
 class Survey {
 	constructor({data, reference}) {
@@ -38,21 +38,19 @@ function prepData(data, container, parentNode = null) {
 	if(typeof(data) === 'object') {
 		container.containerNodes.push(node);
 
-		parentNode = node;
-
 		forEach(Object.keys(data), k => {
 			container.keyValuePairNodes[k] = container.keyValuePairNodes[k] || [];
 
 			let pairNode = {
-				ancestors: Array.from(parentNode.ancestors),
-				parentNode: parentNode,
+				ancestors: Array.from(node.ancestors),
+				parentNode: node,
 				key: k,
 				value: {key: k, value: data[k]},
 				type: 'pair'
 			};
 
-			if(parentNode)
-				pairNode.ancestors.push(parentNode);
+			if(node)
+				pairNode.ancestors.push(node);
 
 			pairNode.valueNode = prepData(data[k], container, pairNode);
 			pairNode.keyNode = {

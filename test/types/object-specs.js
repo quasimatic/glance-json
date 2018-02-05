@@ -53,8 +53,8 @@ describe('Object', () => {
 
 	it('should not matchevalue with exact-text', () => {
 		expect(() => glanceJSON({
-			key1: 'value1'
-		}, 'value #exact-text')).to.throw('Nothing found');
+			key1: 'subject1'
+		}, 'subject #exact-text')).to.throw('Nothing found');
 	});
 
 	it('should match value with exact-text', () => {
