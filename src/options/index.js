@@ -2,8 +2,8 @@ import inKey from './key';
 import inValue from './value';
 import limitScope from './limit-scope';
 import intersect from './intersect';
-import valueType from './value-type'
-import indexer from './indexer'
-import single from './single'
+import indexer from './indexer';
+import single from './single';
+import returnType from './return-type';
 
-export default {...inKey, ...inValue, ...limitScope, ...intersect, ...valueType, ...indexer, ...single}
+export default {...inKey, ...inValue, ...limitScope, ...intersect, ...indexer, ...single, ...returnType};

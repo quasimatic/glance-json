@@ -76,6 +76,23 @@ describe('Scope', () => {
 			'container > subject').should.deep.equal('subject 1');
 	});
 
+	it('should narrow down if the scope is an deeper ancestor', () => {
+		glanceJSON({
+				container: {
+					outerscope: {
+						outerscope2: {
+							scope: 'scope 1',
+							subject: 'subject 1'
+						}
+					}
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
+	});
+
 	it('should find the same set if the subject is the same as the previous scope', () => {
 		glanceJSON({
 			container: [

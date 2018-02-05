@@ -3,9 +3,9 @@ import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
 import options from './options';
 
-let defaultOptions = ['key', 'value', 'value-type', 'intersect', 'limit-scope'];
+let defaultOptions = ['key', 'value', 'intersect', 'limit-scope'];
 
-let subjectOptions = ['single'];
+let subjectOptions = ['return-type', 'single'];
 
 class Survey {
 	constructor({data, reference}) {

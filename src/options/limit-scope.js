@@ -1,4 +1,6 @@
-import reduce from '@arr/reduce';
+function distance({subjectAncestorLength,scopeAncestorLength, parentIndex, scopeIsContainerOffset}) {
+	return ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset
+}
 
 export default {
 	'limit-scope': function({survey}) {
@@ -36,22 +38,24 @@ export default {
 
 						let scopeIsContainerOffset = 0;
 						if(subject.ancestors.indexOf(scope) !== -1) {
-							scopeIsContainerOffset = subject.ancestors.indexOf(scope) + 1;
+							scopeIsContainerOffset = subject.ancestors.length - subject.ancestors.indexOf(scope);
 						}
 
 						if(subParent !== scopeParent) {
+							let dist = distance({subjectAncestorLength, scopeAncestorLength, parentIndex, scopeIsContainerOffset});
+
 							if(shortest.length || shortest.length === 0) {
-								if(((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset < shortest.length) {
+								if(dist < shortest.length) {
 									shortest.nodes = [subject];
-									shortest.length = ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset;
+									shortest.length = dist;
 								}
-								else if(((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset === shortest.length) {
+								else if(dist === shortest.length) {
 									shortest.nodes.push(subject);
 								}
 							}
 							else {
 								shortest.nodes.push(subject);
-								shortest.length = ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1))) - scopeIsContainerOffset;
+								shortest.length = dist;
 							}
 						}
 						else {
