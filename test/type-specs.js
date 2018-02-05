@@ -21,17 +21,17 @@ describe('Types: scope', () => {
 		glanceJSON({subject: 5}, 'subject > key').should.deep.equal('subject');
 	});
 
-	// it('should return the key for a value', function() {
-	// 	glanceJSON({subject: 5}, '5 > key').should.deep.equal('subject');
-	// });
+	it('should return the key for a value', function() {
+		glanceJSON({subject: 5}, '5 > key').should.deep.equal('subject');
+	});
 
 	it('should return the key of a deeper value', function() {
 		glanceJSON({subject: [1, 2, 3, 4, 5]}, '5 > key').should.deep.equal('subject');
 	});
 
-	// it('should return the value', function() {
-	// 	glanceJSON({subject: 'hello world'}, 'hello > value').should.deep.equal('hello world');
-	// });
+	it('should return the value', function() {
+		glanceJSON({subject: 'hello world'}, 'hello > value').should.deep.equal('hello world');
+	});
 
 	it('should return the array', function() {
 		glanceJSON([1, 2, 3], '2 > array').should.deep.equal([1, 2, 3]);
