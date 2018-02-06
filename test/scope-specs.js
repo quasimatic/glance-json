@@ -45,7 +45,52 @@ describe('Scope', () => {
 				scope: 'scope 2',
 				subject: 'subject 2'
 			},
-			'scope > subject').should.deep.equal(['subject 1', 'subject 2']);
+			'scope > subject').should.deep.equal(['subject 2', 'subject 1']);
+	});
+
+	it('should narrow down if the scope is the container', () => {
+		glanceJSON({
+				container: {
+					scope: 'scope 1',
+					subject: 'subject 1'
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
+	});
+
+	it('should narrow down if the scope is an ancestor', () => {
+		glanceJSON({
+				container: {
+					outerscope: {
+						scope: 'scope 1',
+						subject: 'subject 1'
+					}
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
+	});
+
+	it('should narrow down if the scope is an deeper ancestor', () => {
+		glanceJSON({
+				container: {
+					outerscope: {
+						outerscope2: {
+							scope: 'scope 1',
+							subject: 'subject 1'
+						}
+					}
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
 	});
 
 	it('should find the same set if the subject is the same as the previous scope', () => {
@@ -87,7 +132,7 @@ describe('Scope', () => {
 	});
 
 	it('should not find matches if scope does not match', () => {
-		glanceJSON({
+		expect(() => glanceJSON({
 			container: [
 				{
 					container2: {
@@ -102,6 +147,6 @@ describe('Scope', () => {
 					subject: 'subject 2'
 				}
 			]
-		}, 'missing > scope 1 > subject').should.deep.equal([]);
-	})
+		}, 'missing > scope 1 > subject')).to.throw('Nothing found');
+	});
 });

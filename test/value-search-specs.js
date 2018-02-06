@@ -14,6 +14,6 @@ describe('Value search: equals', () => {
 	});
 
 	it('should find value by key contains', () => {
-		glanceJSON({complexKey: 'subject text'}, 'key').should.equal('subject text');
+		glanceJSON({complexKey: 'subject text'}, 'plex').should.equal('subject text');
 	});
 });

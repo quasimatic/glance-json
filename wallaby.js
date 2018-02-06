@@ -17,7 +17,10 @@ module.exports = function(wallaby) {
 
 		compilers: {
 			'**/*.js*': wallaby.compilers.babel({
-				presets: ['es2015', 'stage-0'],
+				presets: ['env'],
+				plugins: [
+					'transform-object-rest-spread'
+				],
 				babel: require('babel-core')
 			})
 		},
@@ -30,7 +33,7 @@ module.exports = function(wallaby) {
 		testFramework: 'mocha',
 
 		bootstrap: function() {
-			require("babel-polyfill");
+			require('babel-polyfill');
 			global.expect = chai.expect;
 			var should = chai.should();
 		}

@@ -1,16 +1,10 @@
-export default {
-	options: {
-		'key': function({label}) {
-			return `local-name()='${label}'`;
-		},
-		'value': function({label}) {
-			return `.//text()='${label}'`;
-		},
-		'key-contains': function({label}) {
-			return `contains(local-name(), '${label}')`;
-		},
-		'value-contains': function({label}) {
-			return `.//text()[contains(., '${label}')]`;
-		}
-	}
-};
+import inKey from './key';
+import inValue from './value';
+import limitScope from './limit-scope';
+import intersect from './intersect';
+import indexer from './indexer';
+import oneOrMany from './one-or-many';
+import type from './type';
+import returnType from './return-type';
+
+export default {...inKey, ...inValue, ...limitScope, ...intersect, ...indexer, ...oneOrMany, ...type, ...returnType};

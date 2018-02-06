@@ -1,1 +1,5 @@
+.npmignore
+.idea
 src
+wallaby.js
+webpack.config.js

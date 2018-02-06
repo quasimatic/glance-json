@@ -20,6 +20,10 @@ describe('Subject: single', () => {
 	it('should get an object', () => {
 		glanceJSON({subject: {a: 1, b: 2}}, 'subject').should.deep.equal({a: 1, b: 2});
 	});
+
+	it('should find many items by default', () => {
+		glanceJSON({subject: {a: "1", b: "12"}}, '1').should.deep.equal(["1", "12"]);
+	});
 });
 
 describe('Subject: multiple', () => {

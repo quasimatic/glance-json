@@ -1,67 +1,149 @@
-require('./defiant');
 import parse from 'glance-parser';
-import extensions from './options';
-import shortestPath from './shortest-path';
-import {jsonSearch} from './query';
+import reduce from '@arr/reduce';
+import forEach from '@arr/foreach';
+import options from './options';
 
-let {options} = extensions;
+let defaultOptions = ['key', 'value', 'type', 'intersect', 'limit-scope'];
 
-function queries(query) {
-	let result = [];
+let subjectOptions = ['return-type', 'one-or-many'];
 
-	if (query.options.length === 0) {
-		result = result.concat(options['key-contains'](query));
-		result = result.concat(options['value-contains'](query));
+class Survey {
+	constructor({data, reference}) {
+		this.data = data;
+		this.reference = reference;
+		this.remainingTargets = parse(reference);
 	}
-	else {
-		if (query.options.indexOf('key') !== -1) {
-			result = result.concat(options['key'](query));
-		}
-
-		if (query.options.indexOf('value') !== -1) {
-			result = result.concat(options['value'](query));
-		}
-
-		if (query.options.indexOf('key-contains') !== -1) {
-			result = result.concat(options['key-contains'](query));
-		}
-
-		if (query.options.indexOf('value-contains') !== -1) {
-			result = result.concat(options['value-contains'](query));
-		}
-	}
-
-	return `(${result.join(" or ")})`;
 }
 
-let processScopes = (json, scopes) => {
-	return scopes.reduce((scopeResult, targets) => {
-		let subjectResults = targetIntersections(json, targets);
+class Container {
+	constructor() {
+		this.keyValuePairNodes = {};
+		this.valueNodes = [];
+		this.containerNodes = [];
+		this.keyNodes = [];
+	}
+}
 
-		if(scopeResult.scopeResults === null || scopeResult.scopeResults.length !== 0) {
-			let {subjectParentDistance, filteredResults} = shortestPath(subjectResults, scopeResult.scopeResults || [], scopeResult.parentDistance);
-			return {scopeResults: filteredResults, parentDistance: subjectParentDistance};
-		}
-
-		return {scopeResults: [], parentDistance: {}};
-	}, {scopeResults: null, parentDistance: {}}).scopeResults;
-};
-
-let targetIntersections = (json, targets) => {
-	let q = targets.map(target => queries({...target, json})).join(" and ");
-	return jsonSearch(json, `//*[${q} and not(*[${q}])]`);
-};
-
-function CreateGlanceJSON() {
-	this.selector = (json, reference) => {
-		let scopeTargets = parse(reference);
-
-		let result = processScopes(json, scopeTargets);
-		let jsonResult = result.map(r => r.json);
-		return jsonResult.length === 1 ? jsonResult[0] : jsonResult;
+function prepData(data, container, parentNode = null) {
+	let node = {
+		ancestors: parentNode && parentNode.ancestors ? Array.from(parentNode.ancestors) : [],
+		parentNode: parentNode,
+		value: data,
+		type: Object.prototype.toString.call(data) === '[object Array]' ? 'array' : typeof(data)
 	};
 
-	return this.selector;
+	if(parentNode)
+		node.ancestors.push(parentNode);
+
+	if(typeof(data) === 'object') {
+		container.containerNodes.push(node);
+
+		forEach(Object.keys(data), k => {
+			container.keyValuePairNodes[k] = container.keyValuePairNodes[k] || [];
+
+			let pairNode = {
+				ancestors: Array.from(node.ancestors),
+				parentNode: node,
+				key: k,
+				value: {key: k, value: data[k]},
+				type: 'pair'
+			};
+
+			if(node)
+				pairNode.ancestors.push(node);
+
+			pairNode.valueNode = prepData(data[k], container, pairNode);
+			pairNode.keyNode = {
+				ancestors: Array.from(pairNode.ancestors),
+				parentNode: pairNode,
+				value: k,
+				type: typeof(k)
+			};
+
+			pairNode.keyNode.ancestors.push(pairNode);
+
+			if(Object.prototype.toString.call(data) !== '[object Array]') {
+				container.keyValuePairNodes[k].push(pairNode);
+				container.keyNodes.push(pairNode.keyNode);
+			}
+		});
+	}
+	else {
+		container.valueNodes.push(node);
+	}
+
+	return node;
 }
 
-export default new CreateGlanceJSON();
+function processIntersects(survey, intersects) {
+	return reduce(intersects, (result, target) => {
+		result.subjects = result.targets;
+		result.targets = [];
+
+		let execute = null;
+		result = reduce([].concat(defaultOptions, target.options), (r, option) => {
+			if(typeof(options[option]) === 'function')
+				execute = options[option];
+			else {
+				let dynamicOption = options[Object.keys(options).find(k => options[k].check ? options[k].check({option}) : false)];
+				if(dynamicOption) {
+					execute = dynamicOption.execute;
+				}
+			}
+
+			if(execute)
+				return execute({target, option, survey: r});
+
+		}, result);
+
+		result.targets = Object.prototype.toString.call(result.targets) === '[object Array]'? Array.from(new Set(result.targets)): result.targets;
+		return result;
+	}, survey);
+}
+
+function processSurvey(survey) {
+	let container = new Container();
+	prepData(survey.data, container);
+	survey.container = container;
+
+	survey = reduce(survey.remainingTargets, (r, intersects) => {
+		if(r.targets) {
+			if(r.targets.length === 0)
+				return r;
+
+			r.scopes = r.targets;
+			r.targets = [];
+		}
+
+		return processIntersects(r, intersects);
+	}, survey);
+
+	return processSubject({survey});
+}
+
+function processSubject({survey}) {
+	let execute = null;
+	let result = reduce(subjectOptions, (r, option) => {
+		if(typeof(options[option]) === 'function')
+			execute = options[option];
+
+		if(execute) {
+			let intersects = survey.remainingTargets[survey.remainingTargets.length - 1];
+			return execute({target: intersects[intersects.length - 1], survey: r});
+		}
+	}, survey);
+
+	return Object.prototype.toString.call(result.targets) === '[object Array]' ? result.targets.map(r => r.value) : result.targets.value;
+}
+
+export function glanceJSON(data, reference) {
+	if(reference === '')
+		return data;
+
+	let survey = new Survey({data, reference});
+
+	return processSurvey(survey);
+}
+
+export default glanceJSON;
+
