@@ -93,6 +93,39 @@ describe('Scope', () => {
 			'container > subject').should.deep.equal('subject 1');
 	});
 
+	it('should narrow down to the scope with the closest ancestor', () => {
+		glanceJSON({
+				container: {
+					scope: 'scope 1',
+					subject: 'subject 1',
+					more: {
+						subject: 'subject 2'
+					}
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal('subject 1');
+	});
+
+	it('should narrow down to all targets with the closest ancestor scope', () => {
+		glanceJSON({
+				container: {
+					scope: 'scope 1',
+					foobar: 'subject 1',
+					another: 'subject 2',
+					more: {
+						aaa: 'subject 3'
+					}
+				},
+
+				scope: 'scope 2',
+				subject: 'subject 2'
+			},
+			'container > subject').should.deep.equal(['subject 1', 'subject 2']);
+	});
+
 	it('should find the same set if the subject is the same as the previous scope', () => {
 		glanceJSON({
 			container: [
