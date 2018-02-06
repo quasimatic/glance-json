@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@arr/filter": "^1.0.0",
+    "@arr/find": "^1.0.0",
     "@arr/foreach": "^1.0.0",
     "@arr/map": "^1.0.0",
     "@arr/reduce": "^1.0.0",

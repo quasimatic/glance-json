@@ -1,6 +1,7 @@
 import parse from 'glance-parser';
 import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
+import find from '@arr/find';
 import options from './options';
 
 let defaultOptions = ['key', 'value', 'type', 'intersect', 'limit-scope'];
@@ -62,7 +63,6 @@ function prepData(data, container, parentNode = null) {
 			if(node)
 				pairNode.ancestors.push(node);
 
-			pairNode.valueNode = prepData(data[k], container, pairNode);
 			pairNode.keyNode = {
 				ancestors: Array.from(pairNode.ancestors),
 				parentNode: pairNode,
@@ -76,6 +76,13 @@ function prepData(data, container, parentNode = null) {
 				container.keyValuePairNodes[k].push(pairNode);
 				container.keyNodes.push(pairNode.keyNode);
 			}
+
+			let existingValueNode = find(container.containerNodes, v => data[k] === v.value);
+
+			if(existingValueNode)
+				pairNode.valueNode = existingValueNode;
+			else
+				pairNode.valueNode = prepData(data[k], container, pairNode);
 		});
 	}
 	else {
