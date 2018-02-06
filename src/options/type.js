@@ -20,7 +20,7 @@ export default {
 			survey.targets = survey.container.valueNodes;
 		}
 
-		if(['string', 'boolean', 'number', 'function', 'object', 'array'].indexOf(target.label) !== -1) {
+		if(['string', 'boolean', 'number', 'function', 'object', 'array', 'null'].indexOf(target.label) !== -1) {
 			survey.targets = filter([].concat(survey.container.valueNodes, survey.container.containerNodes), r => {
 				return r.type === target.label;
 			});

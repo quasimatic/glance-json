@@ -24,18 +24,28 @@ class Container {
 	}
 }
 
+function getType(o) {
+	if(o === null)
+		return 'null';
+
+	if(Object.prototype.toString.call(o) === '[object Array]')
+		return 'array';
+
+	return typeof(o);
+}
+
 function prepData(data, container, parentNode = null) {
 	let node = {
 		ancestors: parentNode && parentNode.ancestors ? Array.from(parentNode.ancestors) : [],
 		parentNode: parentNode,
 		value: data,
-		type: Object.prototype.toString.call(data) === '[object Array]' ? 'array' : typeof(data)
+		type: getType(data)
 	};
 
 	if(parentNode)
 		node.ancestors.push(parentNode);
 
-	if(typeof(data) === 'object') {
+	if(getType(data) === 'object' || getType(data) === 'array') {
 		container.containerNodes.push(node);
 
 		forEach(Object.keys(data), k => {
@@ -96,7 +106,7 @@ function processIntersects(survey, intersects) {
 
 		}, result);
 
-		result.targets = Object.prototype.toString.call(result.targets) === '[object Array]'? Array.from(new Set(result.targets)): result.targets;
+		result.targets = Object.prototype.toString.call(result.targets) === '[object Array]' ? Array.from(new Set(result.targets)) : result.targets;
 		return result;
 	}, survey);
 }
