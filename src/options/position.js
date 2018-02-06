@@ -26,5 +26,19 @@ export default {
 
 			return survey;
 		}
+	},
+	'first': function({survey}) {
+		if(survey.targets.length === 0)
+			throw new Error('Cannot get first item, no items found');
+
+		survey.targets = survey.targets[0];
+		return survey;
+	},
+	'last': function({survey}) {
+		if(survey.targets.length === 0)
+			throw new Error('Cannot get last item, no items found');
+
+		survey.targets = survey.targets[survey.targets.length - 1];
+		return survey;
 	}
 };
