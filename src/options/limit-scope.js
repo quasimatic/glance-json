@@ -1,3 +1,5 @@
+import filter from '@arr/filter';
+
 function distance({subjectAncestorLength, scopeAncestorLength, parentIndex, scopeIsContainerOffset}) {
 	return ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)));// - scopeIsContainerOffset;
 }
@@ -91,8 +93,9 @@ export default {
 				filteredScopes = nextRoundScopes;
 			}
 
-			if(shortest.nodes.length !== 0)
-				survey.targets = shortest.nodes;
+			if(shortest.nodes.length !== 0) {
+				survey.targets = filter(survey.targets, t => shortest.nodes.indexOf(t) !== -1);
+			}
 		}
 
 		return survey;

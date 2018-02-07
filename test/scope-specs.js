@@ -45,7 +45,7 @@ describe('Scope', () => {
 				scope: 'scope 2',
 				subject: 'subject 2'
 			},
-			'scope > subject').should.deep.equal(['subject 2', 'subject 1']);
+			'scope > subject').should.deep.equal(['subject 1', 'subject 2']);
 	});
 
 	it('should narrow down if the scope is the container', () => {
