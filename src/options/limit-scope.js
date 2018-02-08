@@ -59,6 +59,10 @@ export default {
 								else if(shortest.ancestorLength === scopeIsContainerOffset) {
 									shortest.nodes.push(subject);
 								}
+								else if(scopeIsContainerOffset < shortest.ancestorLength) {
+									shortest.nodes = [subject];
+									shortest.ancestorLength = scopeIsContainerOffset;
+								}
 							}
 							else {
 								let dist = distance({

@@ -109,6 +109,21 @@ describe('Scope', () => {
 			'container > subject').should.deep.equal('subject 1');
 	});
 
+	it('should narrow down to the scope with the closest ancester another example', () => {
+		glanceJSON({
+			subjectRoot: [
+				{
+					subject: {
+						data: 'item 1',
+					},
+					foobar: {
+						data: 'item 2'
+					}
+				},
+			]
+		}, 'subject > data').should.deep.equal('item 1');
+	});
+
 	it('should narrow down to all targets with the closest ancestor scope', () => {
 		glanceJSON({
 				container: {
