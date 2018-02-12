@@ -4,7 +4,7 @@ import forEach from '@arr/foreach';
 import find from '@arr/find';
 import options from './options';
 
-let defaultOptions = ['key', 'value', 'type', 'intersect', 'limit-scope'];
+let defaultOptions = ['root', 'key', 'value', 'type', 'intersect', 'limit-scope'];
 
 let subjectOptions = ['return-type', 'one-or-many'];
 
@@ -120,8 +120,9 @@ function processIntersects(survey, intersects) {
 
 function processSurvey(survey) {
 	let container = new Container();
-	prepData(survey.data, container);
+	let root = prepData(survey.data, container);
 	survey.container = container;
+	survey.container.root = root;
 
 	survey = reduce(survey.remainingTargets, (r, intersects) => {
 		if(r.targets) {
@@ -134,6 +135,9 @@ function processSurvey(survey) {
 
 		return processIntersects(r, intersects);
 	}, survey);
+
+	survey.subjects = survey.targets;
+	survey.targets = [];
 
 	return processSubject({survey});
 }
@@ -150,7 +154,7 @@ function processSubject({survey}) {
 		}
 	}, survey);
 
-	return Object.prototype.toString.call(result.targets) === '[object Array]' ? result.targets.map(r => r.value) : result.targets.value;
+	return Object.prototype.toString.call(result.subjects) === '[object Array]' ? result.subjects.map(r => r.value) : result.subjects.value;
 }
 
 export function glanceJSON(data, reference) {

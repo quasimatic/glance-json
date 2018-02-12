@@ -4,6 +4,9 @@ import escapeRegex from '../escape-regex';
 
 export default {
 	'value': function({target, survey}) {
+		if(target.label === '')
+			return survey;
+		
 		if(target.options.indexOf('key') !== -1)
 			return survey;
 

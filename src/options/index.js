@@ -1,3 +1,4 @@
+import root from './root';
 import inKey from './key';
 import inValue from './value';
 import limitScope from './limit-scope';
@@ -7,4 +8,4 @@ import oneOrMany from './one-or-many';
 import type from './type';
 import returnType from './return-type';
 
-export default {...inKey, ...inValue, ...limitScope, ...intersect, ...position, ...oneOrMany, ...type, ...returnType};
+export default {...root, ...inKey, ...inValue, ...limitScope, ...intersect, ...position, ...oneOrMany, ...type, ...returnType};

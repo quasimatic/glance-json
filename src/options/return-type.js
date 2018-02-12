@@ -7,7 +7,7 @@ export default {
 			return survey;
 
 		if(target.options.indexOf('type') === -1 && survey.remainingTargets[survey.remainingTargets.length - 1].indexOf(target) !== -1) {
-			survey.targets = Array.from(new Set(map([].concat(survey.targets), r => {
+			survey.subjects = Array.from(new Set(map([].concat(survey.subjects), r => {
 				if(r.type === 'pair')
 					return r.valueNode;
 
@@ -16,7 +16,7 @@ export default {
 		}
 
 		if(target.label === 'pair' && survey.scopes && survey.scopes.length > 0) {
-			survey.targets = filter(survey.scopes, r => {
+			survey.subjects = filter(survey.scopes, r => {
 				return r.type === 'pair';
 			});
 		}

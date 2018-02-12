@@ -32,7 +32,7 @@
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
     "mocha": "^5.0.0",
-    "webpack": "^3.10.0"
+    "webpack": "^3.11.0"
   },
   "babel": {
     "ignore": [
@@ -51,6 +51,6 @@
     "@arr/foreach": "^1.0.0",
     "@arr/map": "^1.0.0",
     "@arr/reduce": "^1.0.0",
-    "glance-parser": "0.0.6"
+    "glance-parser": "0.0.7"
   }
 }

@@ -5,6 +5,10 @@ describe('Single', () => {
 		expect(() => glanceJSON({a: 1}, 'b #single')).to.throw('Nothing found');
 	});
 
+	it('should return the root as a single item', () => {
+		glanceJSON({a: 1}, '#single').should.deep.equal({a: 1});
+	});
+
 	it('should find a single item', () => {
 		glanceJSON({a: 1}, '1 #single').should.deep.equal(1);
 	});
@@ -23,6 +27,10 @@ describe('Single', () => {
 describe('Many', () => {
 	it('should return an empty array when no items found', () => {
 		glanceJSON({a: 1}, 'b #many').should.deep.equal([]);
+	});
+
+	it('should support returning the root as an array', function() {
+		glanceJSON({a: 1}, '#many').should.deep.equal([{a: 1}]);
 	});
 
 	it('should return an array with a single item', () => {
