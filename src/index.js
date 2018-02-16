@@ -1,20 +1,12 @@
-import parse from 'glance-parser';
 import reduce from '@arr/reduce';
 import forEach from '@arr/foreach';
 import find from '@arr/find';
 import options from './options';
+import {Survey} from './survey';
 
 let defaultOptions = ['root', 'key', 'value', 'type', 'intersect', 'limit-scope'];
 
 let subjectOptions = ['return-type', 'one-or-many'];
-
-class Survey {
-	constructor({data, reference}) {
-		this.data = data;
-		this.reference = reference;
-		this.remainingTargets = parse(reference);
-	}
-}
 
 class Container {
 	constructor() {
@@ -46,7 +38,7 @@ function prepData(data, container, parentNode = null) {
 	if(parentNode)
 		node.ancestors.push(parentNode);
 
-	if(getType(data) === 'object' || getType(data) === 'array') {
+	if(getType(data) === 'object' || getType(data) === 'array' || getType(data) === 'function') {
 		container.containerNodes.push(node);
 
 		forEach(Object.keys(data), k => {
@@ -157,11 +149,22 @@ function processSubject({survey}) {
 	return Object.prototype.toString.call(result.subjects) === '[object Array]' ? result.subjects.map(r => r.value) : result.subjects.value;
 }
 
-export function glanceJSON(data, reference) {
-	if(reference === '')
-		return data;
+export function glanceJSON(data, referenceOrSurvey) {
+	let survey;
 
-	let survey = new Survey({data, reference});
+	if(typeof(referenceOrSurvey) === 'object') {
+		if(referenceOrSurvey.remainingTargets.length === 0)
+			return data;
+
+		survey = new Survey({data, reference: referenceOrSurvey.reference});
+		survey.remainingTargets = referenceOrSurvey.remainingTargets;
+	}
+	else {
+		if(referenceOrSurvey === '')
+			return data;
+
+		survey = new Survey({data, reference: referenceOrSurvey});
+	}
 
 	return processSurvey(survey);
 }
