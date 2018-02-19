@@ -1,7 +1,18 @@
 import filter from '@arr/filter';
 
-function distance({subjectAncestorLength, scopeAncestorLength, parentIndex, scopeIsContainerOffset}) {
-	return ((subjectAncestorLength + scopeAncestorLength) - (2 * (parentIndex + 1)));// - scopeIsContainerOffset;
+function distance({subjectAncestorLength, scopeAncestorLength, parentIndex}) {
+	return ((subjectAncestorLength - parentIndex) + (scopeAncestorLength - parentIndex));
+}
+
+function matchingParentIndex(scope, subject, max) {
+	for (let i = 0; i <= max; ++i) {
+		if(scope.ancestors[i] !== subject.ancestors[i])
+			return i - 1;
+	}
+}
+
+function ancestorLength(node) {
+	return node.ancestors.length;
 }
 
 export default {
@@ -17,14 +28,14 @@ export default {
 			let filteredScopes = new Set(survey.scopes);
 
 			for (let parentIndex = 0; ; ++parentIndex) {
-				if(filteredScopes.size === 0 || filteredResults.length === 0)
+				if(filteredScopes.size === 0 || filteredResults.size === 0)
 					break;
 
 				let nextRoundSubjects = new Set();
 				let nextRoundScopes = new Set();
 
 				for (let subject of filteredResults) {
-					let subjectAncestorLength = subject.ancestors.length + 1;
+					let subjectAncestorLength = ancestorLength(subject) + 1;
 
 					if(subjectAncestorLength === parentIndex)
 						continue;
@@ -32,7 +43,7 @@ export default {
 					let subParent = subject.ancestors[parentIndex];
 
 					for (let scope of filteredScopes) {
-						let scopeAncestorLength = scope.ancestors.length + 1;
+						let scopeAncestorLength = ancestorLength(scope) + 1;
 
 						if(scopeAncestorLength === parentIndex)
 							continue;
@@ -42,8 +53,7 @@ export default {
 						let scopeIsContainerOffset = 0;
 						let ancestorDistance = 0;
 						if(subject.ancestors.indexOf(scope) !== -1) {
-
-							scopeIsContainerOffset = subject.ancestors.length - subject.ancestors.indexOf(scope);
+							scopeIsContainerOffset = ancestorLength(subject) - subject.ancestors.indexOf(scope);
 							ancestorDistance = subject.ancestors.indexOf(scope);
 						}
 
@@ -68,7 +78,7 @@ export default {
 								let dist = distance({
 									subjectAncestorLength,
 									scopeAncestorLength,
-									parentIndex,
+									parentIndex: matchingParentIndex(scope, subject, parentIndex),
 									scopeIsContainerOffset
 								});
 								if(shortest.length || shortest.length === 0) {
