@@ -14,7 +14,7 @@ export default {
 
 		let search = new RegExp(matchString(escapedLabel, target.options), target.options.indexOf('case-sensitive') !== -1 ? '' : 'i');
 
-		survey.targets = survey.targets.concat(reduce(survey.container.valueNodes.filter(c => !(c.type === 'function' || c.type === 'null')), (r, v) => search.exec(v.value) !== null ? r.concat(v) : r, []));
+		survey.targets = survey.targets.concat(reduce(survey.container.valueNodes.filter(c => !(c.type === 'function' || c.type === 'null')), (r, v) => search.exec(v.value.toString()) !== null ? r.concat(v) : r, []));
 
 		return survey;
 	}
