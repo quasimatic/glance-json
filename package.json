@@ -1,6 +1,6 @@
 {
   "name": "glance-json",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Use glance for referencing data in json",
   "main": "lib/index.js",
   "scripts": {
