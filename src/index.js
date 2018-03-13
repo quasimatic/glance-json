@@ -10,7 +10,7 @@ let subjectOptions = ['return-type', 'one-or-many'];
 
 class Container {
 	constructor() {
-		this.keyValuePairNodes = {};
+		this.keyValuePairNodes = Object.create(null);
 		this.valueNodes = [];
 		this.containerNodes = [];
 		this.keyNodes = [];
