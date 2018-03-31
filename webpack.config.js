@@ -9,9 +9,6 @@ module.exports = {
 		library: 'glanceJSON',
 		libraryExport: 'default'
 	},
-	plugins: [
-		new webpack.optimize.UglifyJsPlugin(),
-	],
 	module: {
 		rules: [
 			{

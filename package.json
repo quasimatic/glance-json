@@ -4,7 +4,7 @@
   "description": "Use glance for referencing data in json",
   "main": "lib/index.js",
   "scripts": {
-    "build": "rm -rf lib && rm -rf dist && babel src -d lib && webpack",
+    "build": "rm -rf lib && rm -rf dist && babel src -d lib && webpack --mode production",
     "pretest": "npm run build",
     "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,12 +27,13 @@
   "homepage": "https://github.com/quasimatic/glance-json#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-loader": "7.1.2",
+    "babel-loader": "7.1.4",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "chai": "^4.1.2",
-    "mocha": "^5.0.0",
-    "webpack": "^3.11.0"
+    "mocha": "^5.0.4",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
   },
   "babel": {
     "ignore": [
