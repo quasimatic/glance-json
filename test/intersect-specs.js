@@ -72,4 +72,29 @@ describe('Intersections', () => {
 			]
 		}, 'firstname #value ^ unique #value > id').should.equal('subject');
 	});
+
+	it('should find multiple intersecting values', () => {
+		glanceJSON({
+			key1: 'duplicate value 1',
+			key2: 'duplicate value 1'
+		}, 'duplicate ^ value').should.deep.equal(['duplicate value 1', 'duplicate value 1']);
+	});
+
+	it('should find the matching object if intersecting two properties', () => {
+		glanceJSON({
+			item1: {
+				key1: 'value1'
+			},
+			item2: {
+				key1: 'value1'
+			}
+		}, 'key1 ^ value1').should.deep.equal([
+			{
+				key1: 'value1'
+			},
+			{
+				key1: 'value1'
+			}
+		]);
+	});
 });

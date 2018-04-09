@@ -22,10 +22,10 @@ export default {
 		//
 		// Find ancestor containing subject and targets
 		//
-		let commonAncestor;
+		let commonAncestors = [];
 
 		for (let parentIndex = 0; ; ++parentIndex) {
-			let currentAncestor = null;
+			let currentAncestors = [];
 
 			for (let subject of survey.subjects) {
 				if(!subject.ancestors[parentIndex])
@@ -33,18 +33,18 @@ export default {
 
 				for (let target of survey.targets) {
 					if(target.ancestors[parentIndex] === subject.ancestors[parentIndex])
-						currentAncestor = target.ancestors[parentIndex];
+						currentAncestors.push(target.ancestors[parentIndex]);
 				}
 			}
 
-			if(!currentAncestor)
+			if(currentAncestors.length === 0)
 				break;
 
-			commonAncestor = currentAncestor;
+			commonAncestors = currentAncestors;
 		}
 
-		if(commonAncestor)
-			survey.targets = [commonAncestor];
+		if(commonAncestors.length !== 0)
+			survey.targets = commonAncestors;
 
 		return survey;
 	}
