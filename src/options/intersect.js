@@ -1,8 +1,9 @@
+import {limitNodes} from '../limit-nodes';
+
 export default {
 	'intersect': function({survey}) {
-		if(!survey.subjects)
+		if(!survey.subjects || survey.subjects.length === 0)
 			return survey;
-
 		//
 		// Find subjects and targets that are the same
 		//
@@ -19,32 +20,9 @@ export default {
 			return survey;
 		}
 
-		//
-		// Find ancestor containing subject and targets
-		//
-		let commonAncestors = [];
+		let nodes = limitNodes({scopes: survey.subjects, ...survey});
 
-		for (let parentIndex = 0; ; ++parentIndex) {
-			let currentAncestors = [];
-
-			for (let subject of survey.subjects) {
-				if(!subject.ancestors[parentIndex])
-					break;
-
-				for (let target of survey.targets) {
-					if(target.ancestors[parentIndex] === subject.ancestors[parentIndex])
-						currentAncestors.push(target.ancestors[parentIndex]);
-				}
-			}
-
-			if(currentAncestors.length === 0)
-				break;
-
-			commonAncestors = currentAncestors;
-		}
-
-		if(commonAncestors.length !== 0)
-			survey.targets = commonAncestors;
+		survey.targets = nodes.containers;
 
 		return survey;
 	}

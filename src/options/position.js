@@ -1,9 +1,7 @@
 export default {
 	'indexer': {
 		check: function({option}) {
-			if(isNaN(parseInt(option)))
-				return false;
-			return true;
+			return !isNaN(parseInt(option));
 		},
 		execute({target, option, survey}) {
 			let index = parseInt(option);
@@ -31,14 +29,14 @@ export default {
 		if(survey.targets.length === 0)
 			throw new Error('Cannot get first item, no items found');
 
-		survey.targets = survey.targets[0];
+		survey.targets = [survey.targets[0]];
 		return survey;
 	},
 	'last': function({survey}) {
 		if(survey.targets.length === 0)
 			throw new Error('Cannot get last item, no items found');
 
-		survey.targets = survey.targets[survey.targets.length - 1];
+		survey.targets = [survey.targets[survey.targets.length - 1]];
 		return survey;
 	}
 };

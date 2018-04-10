@@ -97,4 +97,65 @@ describe('Intersections', () => {
 			}
 		]);
 	});
+
+	it('should find multiple lower than root', () => {
+		glanceJSON({
+			level1: {
+				item1: {
+					key1: 'value1'
+				}
+			},
+			level2: {
+				item1: {
+					key1: 'value1'
+				}
+			}
+		}, 'key1 ^ value1').should.deep.equal([
+			{
+				key1: 'value1'
+			},
+			{
+				key1: 'value1'
+			}
+		]);
+	});
+
+	it('should find the closest matching properties', () => {
+		glanceJSON({
+			level1: {
+				item1: {
+					key1: 'NA',
+					key2: 'value1'
+				}
+			},
+			level2: {
+				item1: {
+					key1: 'NA',
+					level3: {
+						key2: 'value1'
+					}
+				}
+			}
+		}, 'key1 ^ value1').should.deep.equal({
+			key1: 'NA',
+			key2: 'value1'
+		});
+	});
+
+	it('should pick one of multiple', () => {
+		glanceJSON({
+			level1: {
+				item1: {
+					key1: 'value1'
+				}
+			},
+			level2: {
+				item1: {
+					key1: 'value1'
+				}
+			}
+		}, 'key1 ^ value1 #2').should.deep.equal({
+			key1: 'value1'
+		});
+	});
 });

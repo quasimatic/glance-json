@@ -1,4 +1,5 @@
 import reduce from '@arr/reduce';
+import filter from '@arr/filter';
 import forEach from '@arr/foreach';
 import find from '@arr/find';
 import options from './options';
@@ -84,13 +85,21 @@ function prepData(data, container, parentNode = null) {
 	return node;
 }
 
+function prioritizeOptions(targetOptions) {
+	function check(option) {
+		return options['indexer'].check({option}) || ['last', 'first'].indexOf(option) !== -1
+	}
+
+	return [].concat(filter(targetOptions, v => !check(v)), filter(targetOptions, check));
+}
+
 function processIntersects(survey, intersects) {
 	return reduce(intersects, (result, target) => {
 		result.subjects = result.targets;
 		result.targets = [];
 
 		let execute = null;
-		result = reduce([].concat(defaultOptions, target.options), (r, option) => {
+		result = reduce([].concat(defaultOptions, prioritizeOptions(target.options)), (r, option) => {
 			if(typeof(options[option]) === 'function')
 				execute = options[option];
 			else {

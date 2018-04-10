@@ -20,4 +20,16 @@ describe('Indexer', () => {
 	it('should throw an error for 0', () => {
 		expect(() => glanceJSON(['a1', 'a2', 'a3', 'a4', 'a5'], 'a #0')).to.throw('Position 0 not supported please start with 1 or -1');
 	});
+
+	it('should process indexer not at the end', function() {
+		glanceJSON(['aaa', 'aaabbb', 'aaa'], 'aaa #2 #exact-text').should.deep.equal('aaa');
+	});
+
+	it('should process last not at the end', function() {
+		glanceJSON(['aaa', 'aaabbb', 'aaa', 'aaabbb'], 'aaa #last #exact-text').should.deep.equal('aaa');
+	});
+
+	it('should process first not at the end', function() {
+		glanceJSON(['aaabbb', 'aaa', 'aaabbb', 'aaa'], 'aaa #first #exact-text').should.deep.equal('aaa');
+	});
 });
