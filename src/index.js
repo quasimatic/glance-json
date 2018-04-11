@@ -103,7 +103,7 @@ function processIntersects(survey, intersects) {
 		result.targets = [];
 
 		let execute = null;
-		result = reduce([].concat(defaultOptionsRemovingDeclared(target.options), prioritizeOptions(target.options), ['intersect', 'limit-scope']), (r, option) => {
+		result = reduce(prioritizeOptions([].concat(defaultOptionsRemovingDeclared(target.options), target.options, ['intersect', 'limit-scope'])), (r, option) => {
 			if(typeof(options[option]) === 'function')
 				execute = options[option];
 			else {

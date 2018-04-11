@@ -18,4 +18,21 @@ describe('last', () => {
 	it('should throw error for no matches', () => {
 		expect(() => glanceJSON([], 'number #last')).to.throw('Cannot get last item, no items found');
 	});
+
+	it('should get the last match of multiple pairs', () => {
+		let item1 = function() {
+		};
+
+		glanceJSON({
+			container1: {
+				item1: item1,
+			},
+			container2: {
+				item2: function item() {
+				},
+			},
+
+			container3: ['item']
+		}, 'container1 > item #last').should.deep.equal(item1);
+	});
 });
