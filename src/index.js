@@ -5,7 +5,7 @@ import find from '@arr/find';
 import options from './options';
 import {Survey} from './survey';
 
-let defaultOptions = ['root', 'key', 'value', 'type', 'intersect', 'limit-scope'];
+let defaultOptions = ['root', 'key', 'value', 'type'];
 
 let subjectOptions = ['return-type', 'one-or-many'];
 
@@ -93,13 +93,17 @@ function prioritizeOptions(targetOptions) {
 	return [].concat(filter(targetOptions, v => !check(v)), filter(targetOptions, check));
 }
 
+function defaultOptionsRemovingDeclared(targetOptions) {
+	return defaultOptions.filter(o => targetOptions.indexOf(o) === -1)
+}
+
 function processIntersects(survey, intersects) {
 	return reduce(intersects, (result, target) => {
 		result.subjects = result.targets;
 		result.targets = [];
 
 		let execute = null;
-		result = reduce([].concat(defaultOptions, prioritizeOptions(target.options)), (r, option) => {
+		result = reduce([].concat(defaultOptionsRemovingDeclared(target.options), prioritizeOptions(target.options), ['intersect', 'limit-scope']), (r, option) => {
 			if(typeof(options[option]) === 'function')
 				execute = options[option];
 			else {

@@ -23,7 +23,7 @@ export function limitNodes(survey) {
 		containers: []
 	};
 
-	let filteredResults = new Set(survey.targets);
+	let filteredResults = new Set([].concat(survey.targets));
 	let filteredScopes = new Set(survey.scopes);
 
 	for (let parentIndex = 0; ; ++parentIndex) {

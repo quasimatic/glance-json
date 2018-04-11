@@ -55,6 +55,19 @@ describe('Types: scope', () => {
 		glanceJSON({subject: func, subject2: 'function(){}'}, 'subject > function').should.equal(func);
 	});
 
+	it('should return a function with explict type option', function() {
+		let func1 = function() {
+		};
+		let func2 = function() {
+		};
+
+		glanceJSON([
+			{subject: func1, subject2: 'function(){}'},
+			{subject3: func2, subject4: 'function(){}'}
+		], 'subject3 > function #type').should.deep.equal(func2);
+		// ], 'subject3 > function').should.deep.equal([func2]);
+	})
+
 	it('should find the object of a value', function() {
 		glanceJSON({
 			container: {
