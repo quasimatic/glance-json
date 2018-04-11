@@ -29,6 +29,13 @@ describe('Indexer', () => {
 		glanceJSON(['aaa', 'aaabbb', 'aaa', 'aaabbb'], 'aaa #last #exact-text').should.deep.equal('aaa');
 	});
 
+	it('should process a scope and a subject with last', function() {
+		glanceJSON({
+			container1: ['aaa', 'aaabbb', 'aaa', 'aaabbb'],
+			container2: ['aaa', 'aaabbb', 'aaa', 'aaabbb']
+		}, 'container1 > aaa #last').should.deep.equal('aaabbb');
+	});
+
 	it('should process first not at the end', function() {
 		glanceJSON(['aaabbb', 'aaa', 'aaabbb', 'aaa'], 'aaa #first #exact-text').should.deep.equal('aaa');
 	});

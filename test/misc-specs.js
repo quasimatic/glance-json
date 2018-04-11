@@ -40,4 +40,7 @@ describe('Misc', () => {
 		glanceJSON(data, 'scope > description').should.deep.equal('subject');
 	});
 
+	it('should support glancing http', () => {
+	   	glanceJSON(require('http'), 'get #value').should.equal('GET')
+	})
 });
