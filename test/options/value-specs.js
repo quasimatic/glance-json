@@ -9,7 +9,7 @@ describe('Value', () => {
 	});
 
 	it('should support symbols', () => {
-		let symbol = Symbol('item1')
+		let symbol = Symbol('item1');
 		glanceJSON({
 			subject: symbol,
 		}, 'subject').should.equal(symbol);

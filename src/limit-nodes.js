@@ -1,125 +1,76 @@
 import filter from '@arr/filter';
 
-function distance({subjectAncestorLength, scopeAncestorLength, parentIndex}) {
-	return ((subjectAncestorLength - parentIndex) + (scopeAncestorLength - parentIndex));
+function distance({subjectAncestorLength, scopeAncestorLength, matchingAncestorIndex}) {
+	return ((subjectAncestorLength - matchingAncestorIndex) + (scopeAncestorLength - matchingAncestorIndex));
 }
 
-function matchingParentIndex(scope, subject, max) {
-	for (let i = 0; i <= max; ++i) {
-		if(scope.ancestors[i] !== subject.ancestors[i])
-			return i - 1;
+function getMatchingAncestorIndex(scope, subject) {
+	let max = Math.min(scope.ancestors.length, subject.ancestors.length);
+	let lastMatching = -1;
+	for (let i = 0; i < max && scope.ancestors[i] === subject.ancestors[i]; ++i) {
+		lastMatching = i;
 	}
-}
 
-function ancestorLength(node) {
-	return node.ancestors.length;
+	return lastMatching;
 }
 
 export function limitNodes(survey) {
-	let shortest = {
+	let shortestMatches = {
 		ancestorLength: null,
 		length: null,
 		nodes: [],
 		containers: []
 	};
 
-	let filteredResults = new Set([].concat(survey.targets));
-	let filteredScopes = new Set(survey.scopes);
+	let matchedSubjects = new Set([].concat(survey.targets));
+	let matchedScopes = new Set(survey.scopes);
 
-	for (let parentIndex = 0; ; ++parentIndex) {
-		if(filteredScopes.size === 0 || filteredResults.size === 0)
-			break;
+	for (let subject of matchedSubjects) {
+		let subjectAncestorLength = subject.ancestors.length;
 
-		let nextRoundSubjects = new Set();
-		let nextRoundScopes = new Set();
-
-		for (let subject of filteredResults) {
-			let subjectAncestorLength = ancestorLength(subject) + 1;
-
-			if(subjectAncestorLength === parentIndex)
+		for (let scope of matchedScopes) {
+			if(subject === scope)
 				continue;
 
-			let subParent = subject.ancestors[parentIndex];
+			let scopeAncestorLength = scope.ancestors.length;
 
-			for (let scope of filteredScopes) {
-				let scopeAncestorLength = ancestorLength(scope) + 1;
+			let scopeAncestorOffset = 0;
+			let ancestorDistance = 0;
 
-				if(scopeAncestorLength === parentIndex)
-					continue;
+			let scopeIsAncestor = subject.ancestors.indexOf(scope) !== -1;
+			if(scopeIsAncestor) {
+				scopeAncestorOffset = 2;
+				ancestorDistance = subject.ancestors.indexOf(scope);
+			}
 
-				let scopeParent = scope.ancestors[parentIndex];
+			let matchingAncestorIndex = getMatchingAncestorIndex(scope, subject);
+			let matchingAncestor = subject.ancestors[matchingAncestorIndex];
 
-				let scopeIsContainerOffset = 0;
-				let ancestorDistance = 0;
-				if(subject.ancestors.indexOf(scope) !== -1) {
-					scopeIsContainerOffset = ancestorLength(subject) - subject.ancestors.indexOf(scope);
-					ancestorDistance = subject.ancestors.indexOf(scope);
-				}
+			let dist = distance({
+				subjectAncestorLength,
+				scopeAncestorLength,
+				matchingAncestorIndex
+			}) - scopeAncestorOffset;
 
-				if(subParent !== scopeParent) {
-					let matchingAncestorIndex = matchingParentIndex(scope, subject, parentIndex);
-					let matchingAncestor = subject.ancestors[matchingAncestorIndex];
-
-					if(scopeIsContainerOffset || shortest.ancestorLength) {
-						if(scopeIsContainerOffset === 0)
-							continue;
-
-						if(shortest.ancestorLength === null) {
-							shortest.nodes = [subject];
-							shortest.containers = [matchingAncestor];
-							shortest.ancestorLength = scopeIsContainerOffset;
-						}
-						else if(shortest.ancestorLength === scopeIsContainerOffset) {
-							shortest.nodes.push(subject);
-							shortest.containers.push(matchingAncestor);
-						}
-						else if(scopeIsContainerOffset < shortest.ancestorLength) {
-							shortest.nodes = [subject];
-							shortest.containers = [matchingAncestor];
-							shortest.ancestorLength = scopeIsContainerOffset;
-						}
-					}
-					else {
-						let dist = distance({
-							subjectAncestorLength,
-							scopeAncestorLength,
-							parentIndex: matchingAncestorIndex,
-							scopeIsContainerOffset
-						});
-						if(shortest.length || shortest.length === 0) {
-							if(dist < shortest.length) {
-								shortest.nodes = [subject];
-								shortest.containers = [matchingAncestor];
-								shortest.length = dist;
-							}
-							else if(dist === shortest.length) {
-								shortest.nodes.push(subject);
-								shortest.containers.push(matchingAncestor);
-							}
-						}
-						else {
-							shortest.nodes.push(subject);
-							shortest.containers.push(matchingAncestor);
-							shortest.length = dist;
-						}
-					}
-				}
-				else {
-					nextRoundSubjects.add(subject);
-					nextRoundScopes.add(scope);
-				}
+			if(!shortestMatches.length || dist < shortestMatches.length) {
+				shortestMatches.nodes = [subject];
+				shortestMatches.containers = [matchingAncestor];
+				shortestMatches.length = dist;
+			}
+			else if(dist === shortestMatches.length) {
+				shortestMatches.nodes.push(subject);
+				shortestMatches.containers.push(matchingAncestor);
 			}
 		}
-
-		filteredResults = nextRoundSubjects;
-		filteredScopes = nextRoundScopes;
 	}
 
-	if(shortest.nodes.length !== 0)
+	if(shortestMatches.nodes.length !== 0) {
 		return {
-			targets: filter(survey.targets, t => shortest.nodes.indexOf(t) !== -1),
-			containers: shortest.containers
+			// Return nodes in correct order
+			targets: filter(survey.targets, t => shortestMatches.nodes.indexOf(t) !== -1),
+			containers: shortestMatches.containers
 		};
+	}
 
 	else
 		return {

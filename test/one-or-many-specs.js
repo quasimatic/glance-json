@@ -24,6 +24,22 @@ describe('Single', () => {
 	});
 });
 
+describe('Single: Scope', () => {
+	it('should throw an error if more than one scope is found', () => {
+		expect(() => glanceJSON({
+			scope: {
+				scope: {
+					subject: 1
+				}
+			}
+		}, 'scope #single > subject')).to.throw(`Found more than one. Please narrow down the selection or use #many
+
+{"key":"scope","value":{"scope":{"subject":1}}}
+
+{"key":"scope","value":{"subject":1}}`);
+	});
+});
+
 describe('Many', () => {
 	it('should return an empty array when no items found', () => {
 		glanceJSON({a: 1}, 'b #many').should.deep.equal([]);

@@ -65,8 +65,7 @@ describe('Types: scope', () => {
 			{subject: func1, subject2: 'function(){}'},
 			{subject3: func2, subject4: 'function(){}'}
 		], 'subject3 > function #type').should.deep.equal(func2);
-		// ], 'subject3 > function').should.deep.equal([func2]);
-	})
+	});
 
 	it('should find the object of a value', function() {
 		glanceJSON({
@@ -135,10 +134,13 @@ describe('Property', () => {
 	});
 
 	it('should return a string and not a function', () => {
-		glanceJSON({subject: function(){}, subject2: 'function(){}'}, 'function #property').should.equal("function(){}");
-	})
+		glanceJSON({
+			subject: function() {
+			}, subject2: 'function(){}'
+		}, 'function #property').should.equal('function(){}');
+	});
 
 	it('should return a string and not a boolean', () => {
-		glanceJSON({subject: "boolean", subject2: true}, 'boolean #property').should.equal("boolean");
-	})
+		glanceJSON({subject: 'boolean', subject2: true}, 'boolean #property').should.equal('boolean');
+	});
 });

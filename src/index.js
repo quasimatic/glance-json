@@ -53,8 +53,7 @@ function prepData(data, container, parentNode = null) {
 				type: 'pair'
 			};
 
-			if(node)
-				pairNode.ancestors.push(node);
+			pairNode.ancestors.push(node);
 
 			pairNode.keyNode = {
 				ancestors: Array.from(pairNode.ancestors),

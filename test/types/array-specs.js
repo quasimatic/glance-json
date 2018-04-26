@@ -23,10 +23,10 @@ describe('Array', () => {
 
 	it('should find a partial string', () => {
 		glanceJSON(['aaa', 'bbb', 'ccc'], 'a').should.deep.equal('aaa');
-	})
+	});
 
 	it('should not find a partial string with exact-text', function() {
-		expect(() => glanceJSON(['aaa', 'bbb', 'ccc'], 'a #exact-text')).to.throw("Nothing found");
+		expect(() => glanceJSON(['aaa', 'bbb', 'ccc'], 'a #exact-text')).to.throw('Nothing found');
 	});
 
 	it('should find an exact text match', function() {

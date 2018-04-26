@@ -48,7 +48,7 @@ describe('Scope', () => {
 			'scope > subject').should.deep.equal(['subject 1', 'subject 2']);
 	});
 
-	it('should narrow down if the scope is the container', () => {
+	it('should treat immediate child and sibling the same distance', () => {
 		glanceJSON({
 				container: {
 					scope: 'scope 1',
@@ -58,10 +58,23 @@ describe('Scope', () => {
 				scope: 'scope 2',
 				subject: 'subject 2'
 			},
-			'container > subject').should.deep.equal('subject 1');
+			'container > subject').should.deep.equal(['subject 1', 'subject 2']);
 	});
 
-	it('should narrow down if the scope is an ancestor', () => {
+	it('should treat deeper children and siblings the same distance', () => {
+		glanceJSON({
+				container: {
+					scope: 'scope 1',
+					item: 'subject 1'
+				},
+
+				scope: 'scope 2',
+				item: 'subject 2'
+			},
+			'container > subject').should.deep.equal(['subject 1', 'subject 2']);
+	});
+
+	it('should pick a closer sibling than grandchild', () => {
 		glanceJSON({
 				container: {
 					outerscope: {
@@ -73,10 +86,10 @@ describe('Scope', () => {
 				scope: 'scope 2',
 				subject: 'subject 2'
 			},
-			'container > subject').should.deep.equal('subject 1');
+			'container > subject').should.deep.equal('subject 2');
 	});
 
-	it('should narrow down if the scope is an deeper ancestor', () => {
+	it('should pick a closer sibling than a deeper grandchild', () => {
 		glanceJSON({
 				container: {
 					outerscope: {
@@ -90,10 +103,10 @@ describe('Scope', () => {
 				scope: 'scope 2',
 				subject: 'subject 2'
 			},
-			'container > subject').should.deep.equal('subject 1');
+			'container > subject').should.deep.equal('subject 2');
 	});
 
-	it('should narrow down to the scope with the closest ancestor', () => {
+	it('should pick the closest child and sibling', () => {
 		glanceJSON({
 				container: {
 					scope: 'scope 1',
@@ -104,9 +117,9 @@ describe('Scope', () => {
 				},
 
 				scope: 'scope 2',
-				subject: 'subject 2'
+				subject: 'subject 3'
 			},
-			'container > subject').should.deep.equal('subject 1');
+			'container > subject').should.deep.equal(['subject 1', 'subject 3']);
 	});
 
 	it('should narrow down to the scope with the closest ancester another example', () => {
@@ -136,28 +149,43 @@ describe('Scope', () => {
 				},
 
 				scope: 'scope 2',
-				subject: 'subject 2'
+				item: 'subject 4'
 			},
-			'container > subject').should.deep.equal(['subject 1', 'subject 2']);
+			'container > subject').should.deep.equal(['subject 1', 'subject 2', 'subject 4']);
 	});
 
-	it('should find the same set if the subject is the same as the previous scope', () => {
+	it('should not find the same scope as a subject', () => {
 		glanceJSON({
-			container: [
-				{
-					container2: {
-						scope: 'scope 1',
-						subject: 'subject 1'
-					},
-					scope: 'scope 1',
-					subject: 'subject 1.2'
-				},
-				{
-					scope: 'scope 2',
-					subject: 'subject 2'
-				}
-			]
-		}, 'container2 > scope 1 > scope 1').should.equal('scope 1');
+			'container item': {
+				item: 'subject'
+			}
+		}, 'container > item').should.equal('subject');
+	});
+
+	it('should get the first matching container then the subject', () => {
+		glanceJSON({
+			item: {
+				item: 'bad 1',
+				subject: 'good'
+			},
+			something: {
+				item: 'bad 2',
+				subject: 'bad'
+			}
+		}, 'item #first > item > subject').should.equal('good');
+	});
+
+	it('should get the all matching near a scope even if in a container', () => {
+		glanceJSON({
+			item: {
+				item: 'bad 1',
+				subject: 'good 1'
+			},
+			something: {
+				item: 'bad 2',
+				subject: 'good 2'
+			}
+		}, 'item > subject').should.deep.equal(['good 1', 'good 2']);
 	});
 
 	it('should support multiple scopes', () => {
@@ -176,7 +204,7 @@ describe('Scope', () => {
 					subject: 'subject 2'
 				}
 			]
-		}, 'container2 > scope 1 > subject').should.equal('subject 1');
+		}, 'container2 > scope 1 > subject').should.deep.equal(['subject 1', 'subject 1.2']);
 	});
 
 	it('should not find matches if scope does not match', () => {
@@ -197,4 +225,5 @@ describe('Scope', () => {
 			]
 		}, 'missing > scope 1 > subject')).to.throw('Nothing found');
 	});
-});
+})
+;
