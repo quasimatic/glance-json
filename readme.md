@@ -85,3 +85,18 @@ let data = {
 
 glanceJSON(data, "555#value-contains > firstName") // John
 ```
+
+### exact text
+Perform a match search on key's exact text
+
+```javascript
+let data = {
+	contact: {
+		Name: "John Doe",
+		firstName: "John",
+		lastName: "Doe",
+		phoneNumber: 555-555-555
+	}
+};
+
+glanceJSON(data, "Name #exact-text"); // John Doe
