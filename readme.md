@@ -27,13 +27,14 @@ Perform an exact match search on keys
 
 ```javascript
 let data = {
-	square: {
-		backgroundColor: "blue",
-		color: "red"
+	book: {
+		title: "the color purple",
+		cover color: "red"
+		font: "comic sans"
 	}
 };
 
-glanceJSON(data, "color#key"); // red
+glanceJSON(data, "color ^ key"); // red
 ```
 
 ### value
@@ -44,16 +45,16 @@ let data = {
 	contacts: [{
 		firstName: "John",
 		lastName: "Doe",
-		phoneNumber: 555-555-555
+		phoneNumber: 555-555-5555
 	},
     {
     	firstName: "Johnny",
        	lastName: "Doey",
-       	phoneNumber: 555-555-555	
+       	phoneNumber: 555-555-5566	
     }]
 };
 
-glanceJSON(data, "John#value > phoneNumber") // 555-555-555
+glanceJSON(data, "John#value > phoneNumber") // 555-555-5555
 ```
 
 ### key-contains
